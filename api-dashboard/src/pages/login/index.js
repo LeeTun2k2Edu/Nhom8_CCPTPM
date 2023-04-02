@@ -36,7 +36,7 @@ function Login(props) {
                     onChange={handlePasswordChange}
                 />
             </label>
-            <br />
+            <br/>
             <button type="submit">Login</button>
         </form>
     );
