@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import cx from "classnames";
 import Calendar from "../../components/calendar";
+import { Nav } from "react-bootstrap";
 
 function NavBar(props) {
     const menu = [
@@ -37,11 +38,11 @@ function NavBar(props) {
                 <div id="logo">
                     <h1>DASHBOARD</h1>
                 </div>
-                <ul className="navbar-vertical__item">
+                <Nav className="navbar-vertical__item">
                     {menu.map((item, index) => {
                         return (
-                            <li key={index}>
-                                <NavLink
+                            <Nav.Item key={index}>
+                                <Nav.Link
                                     className={cx("navbar-vertical__content", {
                                         active: active[index]
                                     })}
@@ -60,11 +61,11 @@ function NavBar(props) {
                                     <h5 className="navbar-vertical__content-name">
                                         {item.name}
                                     </h5>
-                                </NavLink>
-                            </li>
+                                </Nav.Link>
+                            </Nav.Item>
                         );
                     })}
-                </ul>
+                </Nav>
                 <Calendar />
             </div>
         </Fragment>

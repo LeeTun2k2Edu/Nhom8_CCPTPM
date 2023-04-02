@@ -11609,7 +11609,7 @@ button,
     padding-bottom: 16px;
 }
 
-#navbar li {
+#navbar .navbar-vertical__content {
     display: flex;
     -webkit-box-align: center;
     align-items: center;
@@ -11619,11 +11619,11 @@ button,
     cursor: pointer;
 }
 
-#navbar li a {
+#navbar .navbar-vertical__content{
     color: var(--bs-dark);
 }
 
-#navbar li a.active {
+#navbar .navbar-vertical__content.active {
     color: var(--bs-primary);
 }
 
