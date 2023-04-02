@@ -15,8 +15,14 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm ci
-      - run: npm test
+      - name: Install dependencies
+        run: |
+          cd api-dashboard
+          npm ci
+      - name: Run tests
+        run: |
+          cd api-dashboard
+          npm test
 
   publish-gpr:
     needs: build
@@ -26,11 +32,16 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 16
           registry-url: https://npm.pkg.github.com/
-      - run: npm ci
-      - run: npm publish
+      - run: |
+          cd api-dashboard
+          npm ci
+      - run: |
+          cd api-dashboard
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
