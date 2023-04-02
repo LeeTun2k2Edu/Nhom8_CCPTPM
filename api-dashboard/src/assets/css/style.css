@@ -7676,7 +7676,7 @@ fieldset:disabled .btn {
 
 /* rtl:end:remove */
 .text-primary {
-    color: #545cd8 !important;
+    color: var(--bs-primary) !important;
 }
 
 .text-secondary {
@@ -11408,11 +11408,67 @@ button,
     opacity: 1 !important;
 }
 
-#header {
+#login, #signup {
+    height: 100vh;
+}
+
+#login form, #signup form {
+    width: 25rem;
+
+}
+
+#login label, #signup label{
+    font-size: 1rem;
+    padding: 8px 0;
+}
+
+#login .form-group, #signup .form-group {
+    margin-top: 16px;
+}
+
+#login button, #signup button {
+    padding: 8px 32px;
+}
+
+#login .theme, #signup .theme{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     background: linear-gradient(
         135deg,
         rgb(134, 140, 255) 0%,
         rgb(100, 100, 255) 50%
+    );
+    color: var(--bs-white);
+    user-select: none;
+    border-radius: 25% 0 10% 50%;
+    cursor: pointer;
+}
+
+#login .api, #signup .api{
+    font-size: 5rem;
+    font-weight: bold;
+}
+
+#login .dashboard, #signup .dashboard {
+    font-size: 6rem;
+    font-weight: bold;
+}
+
+#login .icon, #signup .icon {
+    font-size: 2rem;
+}
+
+#login .icon svg, #signup .icon svg {
+    padding: .7rem;
+}
+
+#header {
+    background: linear-gradient(
+        135deg,
+        rgb(134, 140, 255) 0%,
+        rgb(100, 100, 255) 100%
     );
     color: var(--bs-white);
     position: fixed;
@@ -11600,64 +11656,25 @@ button,
     min-width: 10vw;
 }
 
-#dashboard {
+#dashboard, #table, #circle-charts, #line-charts, #help, #about {
     margin-top: 64px;
 }
 
-#dashboard .report-header {
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--bs-primary);
-}
-
-#table {
-    margin-top: 64px;
-}
-
-#table .table-header {
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--bs-primary);
-}
-
-#circle-charts {
-    margin-top: 64px;
-}
-
-#circle-charts .charts-header {
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--bs-primary);
-}
-
-#line-charts {
-    margin-top: 64px;
-}
-
-#line-charts .charts-header {
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--bs-primary);
-}
-
-#help {
-    margin-top: 64px;
-}
-
-#help .help-header {
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--bs-primary);
-}
-
-#about {
-    margin-top: 64px;
-}
-
+#dashboard .report-header,
+#table .table-header,
+#circle-charts .charts-header,
+#line-charts .charts-header,
+#help .help-header,
 #about .about-header {
     margin-bottom: 8px;
     font-weight: bold;
     color: var(--bs-primary);
+}
+
+#table .select-box {
+    width: 25%;
+    min-width: 200px;
+    margin-bottom: 1rem;
 }
 
 #footer {

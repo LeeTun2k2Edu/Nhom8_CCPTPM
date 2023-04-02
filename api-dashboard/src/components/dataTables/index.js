@@ -65,7 +65,7 @@ function Table(props) {
         <div id="table">
             <Container className="data-table">
                 <h2 className="table-header">Data tables</h2>
-                <Select options={options} defaultValue={options.length?options[0]:"Null"} onChange={(newValue)=>setDataDisplay(data[newValue.value])}/>
+                <Select className="select-box" options={options} defaultValue={options.length?options[0]:"Null"} onChange={(newValue)=>setDataDisplay(data[newValue.value])}/>
                 <DataTable columns={columns} data={dataDisplay} />
             </Container>
         </div>
