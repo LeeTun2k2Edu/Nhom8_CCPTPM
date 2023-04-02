@@ -18,6 +18,8 @@ jobs:
       - run: |
           cd api-dashboard
           npm ci
-      - run: npm test
+      - run: |
+          cd api-dashboard
+          npm test
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
