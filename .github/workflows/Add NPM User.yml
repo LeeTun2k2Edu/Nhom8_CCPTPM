@@ -10,5 +10,5 @@ jobs:
       - name: Login to NPM
         run: |
           cd api-dashboard
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" > ~/api-dashboard/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" > ~/.npmrc
           npm whoami
