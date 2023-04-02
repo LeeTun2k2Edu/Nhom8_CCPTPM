@@ -41,7 +41,7 @@ jobs:
         with:
           command: login
         env:
-          NODE_AUTH_TOKEN: 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
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: CI
         run: |
           cd api-dashboard
@@ -52,4 +52,4 @@ jobs:
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          NPM_AUTH_TOKEN: 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
+          NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
