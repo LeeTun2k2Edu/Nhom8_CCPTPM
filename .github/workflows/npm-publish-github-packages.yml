@@ -17,11 +17,11 @@ jobs:
           node-version: 16
       - name: CI
         run: |
-          cd frontend
+          cd api-dashboard
           npm ci
       - name: Run test
         run: |
-          cd frontend
+          cd api-dashboard
           npm test
 
   publish-gpr:
@@ -38,11 +38,11 @@ jobs:
           registry-url: https://npm.pkg.github.com/
       - name: CI
         run: |
-          cd frontend
+          cd api-dashboard
           npm ci
       - name: Publish
         run: |
-          cd frontend
+          cd api-dashboard
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
