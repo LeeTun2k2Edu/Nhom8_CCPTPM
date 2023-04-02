@@ -1,4 +1,4 @@
-name: hello word
+name: Build ReactJS code
 on:
   push:
     branches:
@@ -7,10 +7,11 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Use Node.js 14.x
+    - uses: cd api-dashboard
+    - name: Use Node.js 16.x
       uses: actions/setup-node@v2
       with:
-        node-version: 14.x
+        node-version: 16.x
     - name: Install dependencies
       run: npm install
     - name: Build
