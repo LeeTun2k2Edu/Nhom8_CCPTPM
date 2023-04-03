@@ -42,7 +42,7 @@ function NavBar(props) {
                     {menu.map((item, index) => {
                         return (
                             <Nav.Item key={index}>
-                                <Nav.Link
+                                <NavLink
                                     className={cx("navbar-vertical__content", {
                                         active: active[index]
                                     })}
@@ -61,7 +61,7 @@ function NavBar(props) {
                                     <h5 className="navbar-vertical__content-name">
                                         {item.name}
                                     </h5>
-                                </Nav.Link>
+                                </NavLink>
                             </Nav.Item>
                         );
                     })}
