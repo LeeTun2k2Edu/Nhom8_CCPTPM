@@ -8,7 +8,7 @@ import ScatterChartComponent from "../scatterChartComponent";
 import RadarChartComponent from "../radarChartComponent";
 import ComposeChartComponent from "../composeChartComponent";
 
-function Charts1(props) {
+function Charts2(props) {
     const axis = [
         { name: "Jan", uv: 4000, pv: 2400, amt: 2400 },
         { name: "Feb", uv: 3000, pv: 1398, amt: 2210 },
@@ -124,4 +124,4 @@ function Charts1(props) {
     );
 }
 
-export default Charts1;
+export default Charts2;
