@@ -11656,14 +11656,14 @@ button,
     min-width: 10vw;
 }
 
-#dashboard, #table, #circle-charts, #line-charts, #help, #about {
+#dashboard, #table, #charts-1, #charts-2, #help, #about {
     margin-top: 64px;
 }
 
 #dashboard .report-header,
 #table .table-header,
-#circle-charts .charts-header,
-#line-charts .charts-header,
+#charts-1 .charts-header,
+#charts-2 .charts-header,
 #help .help-header,
 #about .about-header {
     margin-bottom: 8px;

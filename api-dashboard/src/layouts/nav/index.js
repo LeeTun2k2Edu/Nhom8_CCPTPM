@@ -17,8 +17,8 @@ function NavBar(props) {
     const menu = [
         { icon: faHouse, name: "Home", href: "/home/dashboard" },
         { icon: faTable, name: "Data tables", href: "/home/data-tables" },
-        { icon: faChartPie, name: "Circle charts", href: "/home/circle-charts"},
-        { icon: faChartLine, name: "Line charts", href: "/home/line-charts" },
+        { icon: faChartPie, name: "Charts 1", href: "/home/charts-1"},
+        { icon: faChartLine, name: "Charts 2", href: "/home/charts-2" },
         { icon: faCircleQuestion, name: "Help", href: "/home/help" },
         { icon: faInfoCircle, name: "About", href: "/home/about" },
     ];
