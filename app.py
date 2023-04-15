@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
 import json
+import dbms
 
 app = Flask(__name__)
 CORS(app)
@@ -73,6 +74,47 @@ def getData():
 def fulldata():
     return jsonify(DATA)
 
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    
+    user = dbms.get_user_by_username(username)
+    if user is None:
+        return jsonify({'message': 'Invalid username or password'}), 401
+    
+    if user[2] == password:
+        access_token = 'success'
+        return jsonify({'access_token': access_token, 'username': username}), 200
+    else:
+        return jsonify({'message': 'Invalid username or password'}), 401
+
+
+@app.route('/api/signup', methods=['POST'])
+def signup():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    email = request.json.get('email')
+    full_name = request.json.get('name')
+    role = 'user'
+
+    # Thực hiện đăng ký tài khoản
+    # Nếu đăng ký thành công, trả về thông báo thành công
+    # Nếu đăng ký thất bại, trả về mã lỗi và thông báo lỗi tương ứng
+    
+    # Kiểm tra xem username đã tồn tại trong bảng chưa
+    user = dbms.get_user_by_username(username)
+    if user is not None:
+        return jsonify({'message': 'Username already exists'}), 409
+    
+    # Thêm user vào bảng
+    dbms.add_user(username, password, email, full_name, role)
+    
+    # Trả về thông báo thành công
+    return jsonify({'message': 'Signup success'}), 200
+
+
 @app.route('/api/locations')
 def locations():
     data_keys = DATA.keys()
@@ -101,6 +143,23 @@ def locationDetail():
         })
         ct+=1
     return jsonify(data)
+
+
+@app.route('/api/user/<username>', methods=['GET'])
+def get_user(username):
+    # Lấy thông tin người dùng từ database hoặc bất kỳ nguồn dữ liệu nào khác
+    user = dbms.get_user_by_username(username)
+    # Trả về thông tin người dùng dưới dạng JSON
+    result = {
+        'username': user[1],
+        'email': user[3],
+        'name': user[4],
+        'role': user[5]
+    }
+    return jsonify(result), 200
+
+
+
 
 if __name__ == '__main__':
     text = getData()
