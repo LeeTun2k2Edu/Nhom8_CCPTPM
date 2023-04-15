@@ -17,12 +17,12 @@ function UserBox(props) {
     useEffect(() => {
         async function fetchUser() {
             try {
-                const username = localStorage.getItem('username');
-                const response = await apiFunctions.userinfo(username);
-                setUser(response);
-            } catch (error) {
-                alert('An error occurred while fetching user info.');
-            }
+                if (localStorage.getItem('username')) {
+                    const username = localStorage.getItem('username');
+                    const response = await apiFunctions.userinfo(username);
+                    setUser(response);
+                }
+            } catch (error) {}
         }
 
         fetchUser();
