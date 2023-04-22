@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import apiFunctions from '../../api/api.js'; // Import đối tượng apiFunctions
 import {
     faHouse,
     faTable,
@@ -24,18 +23,7 @@ function Login(props) {
     };
 
     const handleSubmit = (event) => {
-        event.preventDefault();
-        apiFunctions
-            .login(username, password)
-            .then((response) => {
-                localStorage.setItem('token', response.access_token);
-                localStorage.setItem('username', response.username);
-                alert('Logged in successfully.');
-                window.location.replace('/home');
-            })
-            .catch((error) => {
-                alert('An error occurred while logging in.');
-            });
+
     };
 
     return (

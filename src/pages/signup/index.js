@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import apiFunctions from '../../api/api.js'; // Import đối tượng apiFunctions
 import {
     faHouse,
     faTable,
@@ -17,7 +16,6 @@ function Signup() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [fullname, setFullname] = useState('');
-    const [errors, setErrors] = useState({});
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
@@ -40,41 +38,7 @@ function Signup() {
     };
 
     const handleSubmit = (event) => {
-        event.preventDefault();
-        let err = {};
-        if (fullname.trim() === '') {
-            err.fullname = 'Full name is required';
-        }
-        if (username.trim() === '') {
-            err.username = 'Username is required';
-        }
-        if (email.trim() === '') {
-            err.email = 'Email is required';
-        }
-        if (password.trim() === '') {
-            err.password = 'Password is required';
-        }
-        if (confirmPassword.trim() === '') {
-            err.confirmPassword = 'Confirm Password is required';
-        }
-        if (password.trim() !== confirmPassword.trim()) {
-            err.confirmPassword = 'Password and Confirm Password must match';
-        }
-
-        if (Object.keys(err).length === 0) {
-            apiFunctions
-                .signup(username, password, email, fullname)
-                .then((response) => {
-                    window.location.replace('/login');
-                })
-                .catch((error) => {
-                    alert('An error occurred while logging in.');
-                });
-        } else {
-            setErrors(err);
-        }
-
-        alert(errors)
+        
     };
     return (
         <Fragment>

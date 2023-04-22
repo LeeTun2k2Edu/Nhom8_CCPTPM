@@ -6,7 +6,6 @@ import Charts from "../../components/charts-1";
 import Help from "../../components/help";
 import About from "../../components/about";
 import Empty from "../../components/empty";
-import Account from "../../components/account"
 
 function Main(props) {
     return (
@@ -23,7 +22,6 @@ function Main(props) {
                         path="/"
                         element={<Navigate to="/home/overview" />}
                     />
-                    <Route path="/account" element={<Account />} />
                 </Routes>
             </div>
         </Fragment>

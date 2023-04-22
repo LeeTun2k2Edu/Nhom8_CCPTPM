@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 
 import Dropdown from 'react-bootstrap/Dropdown';
 
@@ -9,28 +9,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'react-toastify/dist/ReactToastify.css';
 
 import avatar1 from '../../../assets/images/avatars/0.png';
-import apiFunctions from '../../../api/api.js';
 
 function UserBox(props) {
-    const [user, setUser] = useState({});
-
-    useEffect(() => {
-        async function fetchUser() {
-            try {
-                if (localStorage.getItem('username')) {
-                    const username = localStorage.getItem('username');
-                    const response = await apiFunctions.userinfo(username);
-                    setUser(response);
-                }
-            } catch (error) {}
-        }
-
-        fetchUser();
-    }, []);
+    const [user, setUser] = useState({"name": "a", "role": "a"});
     const handleLogin = () => {
         if (!localStorage.getItem('token')) {
             // Nếu chưa đăng nhập, chuyển hướng sang trang đăng nhập
             window.location.href = '/login';
+            setUser({"name": "b", "role": "b"})
         } else {
             // Nếu đã đăng nhập, chuyển hướng sang trang Account
             window.location.href = '/home/account';
