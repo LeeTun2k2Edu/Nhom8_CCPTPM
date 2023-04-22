@@ -18,13 +18,11 @@ function NavBar(props) {
         { icon: faTable, name: "Data tables", href: "/home/data-tables" },
         { icon: faChartPie, name: "Charts", href: "/home/charts"},
         { icon: faCircleQuestion, name: "Help", href: "/home/help" },
-        { icon: faInfoCircle, name: "About", href: "/home/about" },
-        { icon: faInfoCircle, name: "Temp", href: "/home/tmp" },
+        { icon: faInfoCircle, name: "About", href: "/home/about" }
     ];
 
     const [active, setActive] = useState([
         true,
-        false,
         false,
         false,
         false,
@@ -47,7 +45,7 @@ function NavBar(props) {
                                     })}
                                     to={item.href}
                                     onClick={() => {
-                                        let arr = [false, false, false, false, false, false];
+                                        let arr = [false, false, false, false, false];
                                         arr[index] = true;
                                         setActive(arr);
                                     }}

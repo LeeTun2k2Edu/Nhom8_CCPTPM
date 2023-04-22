@@ -1,31 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
-import LineChartComponent from "../lineChartComponent";
-import BarChartComponent from "../barChartComponent";
-import AreaChartComponent from "../areaChartComponent";
-import PieChartComponent from "../pieChartComponent";
-import ScatterChartComponent from "../scatterChartComponent";
-import RadarChartComponent from "../radarChartComponent";
-import ComposeChartComponent from "../composeChartComponent";
+import PieChartComponent from "../pieChartComponent"
+import BarChartComponent from "../barChartComponent"
+import ScatterChartComponent from "../scatterChartComponent"
+import axios from "axios";
+import { debounce } from "lodash";
 
 function Dashboard(props) {
-    const axis = [
-        { name: "Jan", uv: 4000, pv: 2400, amt: 2400 },
-        { name: "Feb", uv: 3000, pv: 1398, amt: 2210 },
-        { name: "Mar", uv: 2000, pv: 9800, amt: 2290 },
-        { name: "Apr", uv: 2780, pv: 3908, amt: 2000 },
-        { name: "May", uv: 1890, pv: 4800, amt: 2181 },
-        { name: "Jun", uv: 2390, pv: 3800, amt: 2500 },
-        { name: "Jul", uv: 3490, pv: 4300, amt: 2100 },
-    ];
+    const [ok_records, setOk_records] = useState(0)
+    const [fail_records, setFail_records] = useState(0)
+    const [ok_angles, setOk_angles] = useState([])
+    const [fail_angles, setFail_angles] = useState([])
+    const [predict_result_statistic, setPredict_result_statistic] = useState([])
 
-    const pieChart = [
-        { name: "Jan", value: 4000 },
-        { name: "Feb", value: 3000 },
-        { name: "Mar", value: 2000 },
-        { name: "Apr", value: 2780 },
-        { name: "May", value: 1890 },
-    ];
+    // fetch option datas => then fetch 1st record
+    useEffect(() => {
+        const fetchData = debounce(async function () {
+            const result = await axios.get("http://localhost:5000/api/overview");
+            setOk_records(result.data["ok_records"])
+            setFail_records(result.data["fail_records"])
+            setOk_angles(result.data["ok_angles"])
+            setFail_angles(result.data["fail_angles"])
+            setPredict_result_statistic(result.data["predict_result_statistic"])
+        }, 1000)
+        fetchData()
+    }, [ok_records, fail_records, ok_angles, fail_angles, predict_result_statistic]);
+
+    if (!(ok_records && fail_records && ok_angles && fail_angles && predict_result_statistic)) {
+        return (
+            // Render a loading indicator while waiting for the data to load
+            <h1>Loading...</h1>
+        );
+    }
     return (
         <div id="dashboard">
             <Container className="lastest-report">
@@ -33,87 +39,51 @@ function Dashboard(props) {
                 <Row className="report-content">
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container">
-                            <h3 className="p-3">card 1</h3>
-                            <LineChartComponent
-                                data={axis}
-                                width={500}
-                                height={400}
-                                axis={false}
-                                legend={false}
+                            <h5 className="p-3">Status percentage</h5>
+                            <PieChartComponent
+                                data={[{'name': 'ok', 'value': ok_records}, {"name": 'fail', "value": fail_records}]}
+                                width={300}
+                                height={300}
+                                label={true}
+                                legend={true}
                             />
                         </Card>
                     </Col>
                     <Col md="12" lg="6">
-                        <Row>
-                            <Col lg="6">
-                                <Card className="mb-3 pb-3 container">
-                                    <h3 className="p-3">card 2</h3>
-                                    <BarChartComponent
-                                        data={axis}
-                                        width={200}
-                                        height={200}
-                                        axis={false}
-                                        legend={false}
-                                    />
-                                </Card>
-                                <Card className="mb-3 pb-3 container">
-                                    <h3 className="p-3">card 3</h3>
-                                    <AreaChartComponent
-                                        data={axis}
-                                        width={200}
-                                        height={200}
-                                        axis={false}
-                                        legend={false}
-                                    />
-                                </Card>
-                            </Col>
-                            <Col lg="6">
-                                <Card className="mb-3 pb-3 container">
-                                    <h3 className="p-3">card 4</h3>
-                                    <PieChartComponent
-                                        data={pieChart}
-                                        width={200}
-                                        height={200}
-                                        label={false}
-                                        legend={false}
-                                    />
-                                </Card>
-                                <Card className="mb-3 pb-3 container">
-                                    <h3 className="p-3">card 5</h3>
-                                    <ScatterChartComponent
-                                        data={axis}
-                                        width={200}
-                                        height={200}
-                                        axis={false}
-                                        legend={false}
-                                    />
-                                </Card>
-                            </Col>
-                        </Row>
+                        <Card className="mb-3 pb-3 container">
+                            <h5 className="p-3">Ok angles</h5>
+                            <BarChartComponent
+                                data={ok_angles.map(item=>{return {'name': item[0], "value": item[1]}})}
+                                width={300}
+                                height={300}
+                                axis={true}
+                                legend={true}
+                            />
+                        </Card>
                     </Col>
                 </Row>
                 <Row className="report-content">
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container">
-                            <h3 className="p-3">card 6</h3>
-                            <RadarChartComponent
-                                data={axis}
-                                width={500}
-                                height={400}
-                                axis={false}
-                                legend={false}
+                            <h5 className="p-3">Predict result statistic</h5>
+                            <BarChartComponent
+                                data={predict_result_statistic.map(item=>{return {'name': item[0], "value": item[1]}})}
+                                width={300}
+                                height={300}
+                                axis={true}
+                                legend={true}
                             />
                         </Card>
                     </Col>
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container">
-                            <h3 className="p-3">card 7</h3>
-                            <ComposeChartComponent
-                                data={axis}
-                                width={500}
-                                height={400}
-                                axis={false}
-                                legend={false}
+                            <h5 className="p-3">Fail Angles</h5>
+                            <BarChartComponent
+                                data={fail_angles.map(item=>{return {'name': item[0], "value": item[1]}})}
+                                width={300}
+                                height={300}
+                                axis={true}
+                                legend={true}
                             />
                         </Card>
                     </Col>

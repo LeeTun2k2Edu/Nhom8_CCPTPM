@@ -1,172 +1,126 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import requests
-import json
+import database.dbms as dbms
 
 app = Flask(__name__)
 CORS(app)
-DATA = None
-# DATA = {
-#         "ABCP231.031/HO": {
-#             "639bea5b095627cd88451540": {
-#                 "angle_id": 2,
-#                 "date": "2022-12-16T10:47:38.670000",
-#                 "predict_result": [2.0, 3.0, 1.0, 20.0, 14.0],
-#                 "status": "ok",
-#             },
-#             "639becb0095627cd88451564": {
-#                 "angle_id": 2,
-#                 "date": "2022-12-16T10:57:36.283000",
-#                 "predict_result": [2.0, 3.0, 1.0, 20.0, 14.0],
-#                 "status": "ok",
-#             },
-#         },
-#         "ABCP537.556/HO": {
-#             "639be9aa095627cd8845153d": {
-#                 "angle_id": 2,
-#                 "date": "2022-12-16T10:44:42.244000",
-#                 "predict_result": [14.0, 1.0, 2.0, 20.0, 3.0],
-#                 "status": "ok",
-#             },
-#             "639bea18095627cd8845153e": {
-#                 "angle_id": 2,
-#                 "date": "2022-12-16T10:46:31.738000",
-#                 "predict_result": [2.0, 3.0, 1.9, 1.1, 20.0, 14.0],
-#                 "status": "fail",
-#             },
-#         },
-#     };
+LOCATIONS = ["-"]
+YEAR = 2022
+MONTH = 12
+STATUS = ["-","ok", "fail"]
+ANGLES = ["-", 1, 2, 3, 4, 5, 6, 7]
 
-def getToken():
-    url = "https://cads-api.fpt.vn/fiber-detection/v2/getToken"
-
-    payload = json.dumps({
-    "clientId": "H8J1NKema4LrrUu6TYq6kH5if1JX6UyQ",
-    "clientSecret": "RimknsnMuXAzi6gzWqinaUyLMgS95tbp"
-    })
-    headers = {
-    'Content-Type': 'application/json'
-    }
-
-    response = requests.request("POST", url, headers=headers, data=payload)
-
-    data = json.loads(response.text)
-
-    return data['access_token']
-
-
-def getData():
-    token = getToken()
-    url = "http://cads-api.fpt.vn/fiber-detection/v2/using_json_inf/2022/12"
-
-    payload = ""
-    headers = {
-    'Content-Type': 'application/json',
-    'Authorization': token
-    }
-
-    response = requests.request("POST", url, headers=headers, data=payload)
-
-    return response.text  
+def cleanData():
+    data = dbms.get_all_data()
+    for item in data:
+        if (item[1] not in LOCATIONS):
+            LOCATIONS.append(item[1])
 
 @app.route('/')
 def fulldata():
-    return jsonify(DATA)
+    return jsonify(dbms.get_all_data())
 
-@app.route('/api/data-table/locations')
-def dataLocations():
-    data_keys = DATA.keys()
+@app.route('/api/user/<username>', methods=['GET'])
+def get_user(username):
+    # Lấy thông tin người dùng từ database hoặc bất kỳ nguồn dữ liệu nào khác
+    user = dbms.get_user_by_username(username)
+    # Trả về thông tin người dùng dưới dạng JSON
+    result = {
+        'username': user[1],
+        'email': user[3],
+        'name': user[4],
+        'role': user[5]
+    }
+    return jsonify(result), 200
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    
+    user = dbms.get_user_by_username(username)
+    if user is None:
+        return jsonify({'message': 'Invalid username or password'}), 401
+    
+    if user[2] == password:
+        access_token = 'success'
+        return jsonify({'access_token': access_token, 'username': username}), 200
+    else:
+        return jsonify({'message': 'Invalid username or password'}), 401
+
+@app.route('/api/signup', methods=['POST'])
+def signup():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    email = request.json.get('email')
+    full_name = request.json.get('name')
+    role = 'user'
+
+    # Thực hiện đăng ký tài khoản
+    # Nếu đăng ký thành công, trả về thông báo thành công
+    # Nếu đăng ký thất bại, trả về mã lỗi và thông báo lỗi tương ứng
+    
+    # Kiểm tra xem username đã tồn tại trong bảng chưa
+    user = dbms.get_user_by_username(username)
+    if user is not None:
+        return jsonify({'message': 'Username already exists'}), 409
+    
+    # Thêm user vào bảng
+    dbms.add_user(username, password, email, full_name, role)
+    
+    # Trả về thông báo thành công
+    return jsonify({'message': 'Signup success'}), 200
+
+@app.route('/api/options') 
+def locations(): # Lấy tất cả key trong DATA
+    return jsonify({
+        "LOCATIONS":LOCATIONS, 
+        "YEAR":YEAR, 
+        "MONTH":MONTH, 
+        "STATUS":STATUS, 
+        "ANGLES":ANGLES
+    })
+
+@app.route('/api/data-table')
+def dataTable(): 
+    location = request.args.get('location')
+    status = request.args.get('status')
+    angle = request.args.get('angle')
+    hardData = dbms.get_data_by_filtered(location=location, status=status, angle=angle)
     data = []
-    for key in data_keys:
+    for index, item in enumerate(hardData):
         data.append({
-            "value": key, 
-            "label": key
+            "stt": index+1,
+            "date": item[0],
+            "angle_id": item[1],
+            "status": item[2],
+            "predict_result": item[3] 
         })
     return jsonify(data)
 
-@app.route('/api/data-table/location-details')
-def dataLocationDetails():
-    location = request.args.get('location')
-    data = []
-    ct = 1
-
-    for key in DATA[location]:
-        val = DATA[location][key]
-        data.append({
-            "id": key,
-            "stt": ct,
-            "date": val["date"],
-            "angle_id": val["angle_id"],
-            "status": val["status"],
-            "predict_result": val["predict_result"]
-        })
-        ct+=1
-    return jsonify(data)
-
-@app.route('/api/ok-items')
-def ok():
-    location = request.args.get('location')
-    data = {}
-    for key, value in DATA[location].items():
-        if value["status"] == "ok":
-            data[key] = value
-    return jsonify(data)
-
-@app.route('/api/fail-items')
-def fail():
-    location = request.args.get('location')
-    data = {}
-    for key, value in DATA[location].items():
-        if value["status"] == "fail":
-            data[key] = value
-    return jsonify(data)
-
-@app.route('/api/avg')
-def avg():
-    location = request.args.get('location')
-    data = {}
-    for key, val in DATA[location].items():
-        if key not in data:
-            data[key] = {}
-        for idx, val in enumerate(val["predict_result"]):
-            if idx not in data[key]:
-                data[key][idx] = []
-            data[key][idx].append(val)
-    for key, val in data.items():
-        for idx, values in val.items():
-            avg = sum(values) / len(values)
-            data[key][idx] = avg
-    return jsonify(data)
-
-@app.route('/api/charts')
-def charts():
-    location = request.args.get('location')
-    ok_item = {}
-    fail_item = {}
-    predict = {}
-    for key, value in DATA[location].items():
-        # ok / fail
-        if value["status"] == "ok":
-            ok_item[key] = value
-        elif value["status"] == "fail":
-            fail_item[key] = value
-
-        # avg predict
-        predict[key] = sum(value["predict_result"])/len(value["predict_result"])
+@app.route('/api/overview')
+def overview():
+    ok_records = dbms.get_number_records_with_status('ok')
+    fail_records = dbms.get_number_records_with_status('fail')
+    ok_angles = dbms.get_number_angle_with_status('ok')
+    fail_angles = dbms.get_number_angle_with_status('fail')
+    predict_result_statistic = dbms.get_statistic_predict_result()
 
     data = {
-        "ok_item": ok_item,
-        "fail_item": fail_item,
-        "predict": predict
+        "ok_records": ok_records[0][0],
+        "fail_records": fail_records[0][0],
+        "ok_angles": ok_angles,
+        "fail_angles": fail_angles,
+        "predict_result_statistic": predict_result_statistic
     }
     return jsonify(data)
 
-@app.route('/api/all')
-def getAll():
-    return jsonify(DATA)
+@app.route('/api/test')
+def test():
+    return jsonify()
 
 if __name__ == '__main__':
-    text = getData()
-    DATA:dict = json.loads(text)
     app.debug=True
+    cleanData()
+    print(dbms.get_all_user())
     app.run(host="localhost")

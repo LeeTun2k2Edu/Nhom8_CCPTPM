@@ -11614,7 +11614,7 @@ button,
     -webkit-box-align: center;
     align-items: center;
     flex-direction: row;
-    padding: 12px;
+    padding: 18px;
     padding-inline-start: 10px;
     cursor: pointer;
 }

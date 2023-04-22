@@ -14,21 +14,15 @@ function ScatterChartComponent(props) {
     return (
         <ScatterChart width={width} height={height} data={data}>
             {axis ? <XAxis dataKey="uv"/> : null}
-            {axis ? <YAxis dataKey="pv"/> : null}
+            {axis ? <YAxis dataKey="value"/> : null}
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip />
             {legend ? <Legend /> : null}
             <Scatter
                 type="monotone"
-                dataKey="pv"
+                dataKey="value"
                 stroke="#8884d8"
                 fill="#8884d8"
-            />
-            <Scatter
-                type="monotone"
-                dataKey="uv"
-                stroke="#82ca9d"
-                fill="#82ca9d"
             />
         </ScatterChart>
     );
