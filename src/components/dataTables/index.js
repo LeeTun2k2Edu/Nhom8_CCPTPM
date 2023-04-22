@@ -1,9 +1,9 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import Select from "react-select";
-import { debounce } from "lodash";
+const { debounce } = require("lodash");
+const axios = require('axios')
 
 
 function Table(props) {

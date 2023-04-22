@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import PieChartComponent from "../pieChartComponent"
 import BarChartComponent from "../barChartComponent"
-import axios from "axios";
-import { debounce } from "lodash";
+const { debounce } = require("lodash");
+const axios = require('axios');
 
 function Dashboard(props) {
     const [ok_records, setOk_records] = useState(0)
