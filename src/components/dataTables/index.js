@@ -5,16 +5,28 @@ import DataTable from "react-data-table-component";
 import Select from "react-select";
 
 function Table(props) {
-    // get option/location
     const [options, setOptions] = useState(null);
     const [data, setData] = useState([]);
 
+    // fetch option datas => then fetch 1st record
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(
-                "http://localhost:5000/api/locations"
-            );
-            setOptions(response.data);
+            await axios
+                .get("http://localhost:5000/api/data-table/locations")
+                .then((response1) => {
+                    setOptions(response1.data);
+                    return axios.get(
+                        "http://localhost:5000/api/data-table/location-details",
+                        {
+                            params: {
+                                location: response1.data[0]["value"],
+                            },
+                        }
+                    );
+                })
+                .then((response2) => {
+                    setData(response2.data);
+                });
         }
         fetchData();
     }, []);
@@ -30,7 +42,7 @@ function Table(props) {
     function optionsOnChangeHandle(newValue) {
         async function fetchData() {
             const result = await axios.get(
-                "http://localhost:5000/api/location-details",
+                "http://localhost:5000/api/data-table/location-details",
                 {
                     params: {
                         location: newValue["value"],

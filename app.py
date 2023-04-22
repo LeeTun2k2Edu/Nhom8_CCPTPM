@@ -67,14 +67,14 @@ def getData():
 
     response = requests.request("POST", url, headers=headers, data=payload)
 
-    return response.text   
+    return response.text  
 
 @app.route('/')
 def fulldata():
     return jsonify(DATA)
 
-@app.route('/api/locations')
-def locations():
+@app.route('/api/data-table/locations')
+def dataLocations():
     data_keys = DATA.keys()
     data = []
     for key in data_keys:
@@ -84,11 +84,12 @@ def locations():
         })
     return jsonify(data)
 
-@app.route('/api/location-details')
-def locationDetail():
+@app.route('/api/data-table/location-details')
+def dataLocationDetails():
     location = request.args.get('location')
     data = []
     ct = 1
+
     for key in DATA[location]:
         val = DATA[location][key]
         data.append({
@@ -101,6 +102,68 @@ def locationDetail():
         })
         ct+=1
     return jsonify(data)
+
+@app.route('/api/ok-items')
+def ok():
+    location = request.args.get('location')
+    data = {}
+    for key, value in DATA[location].items():
+        if value["status"] == "ok":
+            data[key] = value
+    return jsonify(data)
+
+@app.route('/api/fail-items')
+def fail():
+    location = request.args.get('location')
+    data = {}
+    for key, value in DATA[location].items():
+        if value["status"] == "fail":
+            data[key] = value
+    return jsonify(data)
+
+@app.route('/api/avg')
+def avg():
+    location = request.args.get('location')
+    data = {}
+    for key, val in DATA[location].items():
+        if key not in data:
+            data[key] = {}
+        for idx, val in enumerate(val["predict_result"]):
+            if idx not in data[key]:
+                data[key][idx] = []
+            data[key][idx].append(val)
+    for key, val in data.items():
+        for idx, values in val.items():
+            avg = sum(values) / len(values)
+            data[key][idx] = avg
+    return jsonify(data)
+
+@app.route('/api/charts')
+def charts():
+    location = request.args.get('location')
+    ok_item = {}
+    fail_item = {}
+    predict = {}
+    for key, value in DATA[location].items():
+        # ok / fail
+        if value["status"] == "ok":
+            ok_item[key] = value
+        elif value["status"] == "fail":
+            fail_item[key] = value
+
+        # avg predict
+        predict[key] = sum(value["predict_result"])/len(value["predict_result"])
+
+    data = {
+        "ok_item": ok_item,
+        "fail_item": fail_item,
+        "predict": predict
+    }
+    return jsonify(data)
+
+@app.route('/api/all')
+def getAll():
+    return jsonify(DATA)
 
 if __name__ == '__main__':
     text = getData()

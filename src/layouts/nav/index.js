@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faHouse,
     faTable,
-    faChartLine,
     faChartPie,
     faInfoCircle,
     faCircleQuestion,
@@ -15,12 +14,12 @@ import { Nav } from "react-bootstrap";
 
 function NavBar(props) {
     const menu = [
-        { icon: faHouse, name: "Home", href: "/home/dashboard" },
+        { icon: faHouse, name: "Overview", href: "/home/overview" },
         { icon: faTable, name: "Data tables", href: "/home/data-tables" },
-        { icon: faChartPie, name: "Charts 1", href: "/home/charts-1"},
-        { icon: faChartLine, name: "Charts 2", href: "/home/charts-2" },
+        { icon: faChartPie, name: "Charts", href: "/home/charts"},
         { icon: faCircleQuestion, name: "Help", href: "/home/help" },
         { icon: faInfoCircle, name: "About", href: "/home/about" },
+        { icon: faInfoCircle, name: "Temp", href: "/home/tmp" },
     ];
 
     const [active, setActive] = useState([

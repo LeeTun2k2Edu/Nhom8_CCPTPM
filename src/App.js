@@ -16,7 +16,7 @@ function App(props) {
                 <Route path="/signup" element={<Signup />} />
                 <Route
                     path="/"
-                    element={<Navigate replace to="/home/dashboard" />}
+                    element={<Navigate replace to="/home/overview" />}
                 />
             </Routes>
         </BrowserRouter>
