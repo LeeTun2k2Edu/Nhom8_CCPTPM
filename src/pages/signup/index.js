@@ -1,6 +1,6 @@
-import React, { Fragment, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { Fragment, useState } from "react";
+import { Col, Row } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faHouse,
     faTable,
@@ -8,14 +8,16 @@ import {
     faChartPie,
     faInfoCircle,
     faCircleQuestion,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 
 function Signup() {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [fullname, setFullname] = useState('');
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [fullname, setFullname] = useState("");
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
@@ -38,7 +40,31 @@ function Signup() {
     };
 
     const handleSubmit = (event) => {
-        
+        event.preventDefault(); // prevent default form submission behavior
+        if (password !== confirmPassword) {
+            toast.error("Passwords do not match");
+            return;
+        }
+        // make API request to register user with provided information
+        // if error, display error message using toast
+        try {
+            async function sendData() {
+                const response = await axios
+                    .post("http://localhost:5000/api/signup", {
+                        username: username,
+                        password: password,
+                        email: email,
+                        full_name: fullname,
+                    })
+                    .catch((error) => {
+                        toast.error(error.response.data.error);
+                    });
+                toast.success(response.data.message);
+            }
+            sendData();
+        } catch (error) {
+            console.log(error.response.data);
+        }
     };
     return (
         <Fragment>
@@ -50,7 +76,9 @@ function Signup() {
                                 <h1 className="text-primary ">Sign up</h1>
                             </div>
                             <div className="form-group">
-                                <label htmlFor="exampleInputEmail1">Full name</label>
+                                <label htmlFor="exampleInputEmail1">
+                                    Full name
+                                </label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -63,7 +91,9 @@ function Signup() {
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="exampleInputUsername">Username</label>
+                                <label htmlFor="exampleInputUsername">
+                                    Username
+                                </label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -76,7 +106,9 @@ function Signup() {
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="exampleEmailPassword">Email</label>
+                                <label htmlFor="exampleEmailPassword">
+                                    Email
+                                </label>
                                 <input
                                     type="email"
                                     className="form-control"
@@ -88,7 +120,9 @@ function Signup() {
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="exampleInputPassword1">Password</label>
+                                <label htmlFor="exampleInputPassword1">
+                                    Password
+                                </label>
                                 <input
                                     type="password"
                                     className="form-control"
@@ -100,7 +134,9 @@ function Signup() {
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="exampleInputPassword2">Confirm password</label>
+                                <label htmlFor="exampleInputPassword2">
+                                    Confirm password
+                                </label>
                                 <input
                                     type="password"
                                     className="form-control"
@@ -118,13 +154,19 @@ function Signup() {
                                 </small>
                             </div>
                             <div className="d-flex justify-content-center w-100">
-                                <button type="submit" className="btn btn-primary">
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                >
                                     Submit
                                 </button>
                             </div>
                         </form>
                     </Col>
-                    <Col className="lg-6 h-100 w-100 theme" onClick={() => (document.location.href = '/')}>
+                    <Col
+                        className="lg-6 h-100 w-100 theme"
+                        onClick={() => (document.location.href = "/")}
+                    >
                         <div className="api">Api</div>
                         <div className="dashboard">Dashboard</div>
                         <div className="icon">
@@ -138,6 +180,7 @@ function Signup() {
                     </Col>
                 </Row>
             </div>
+            <ToastContainer />
         </Fragment>
     );
 }

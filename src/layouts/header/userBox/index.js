@@ -1,27 +1,20 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useContext } from "react";
 
-import Dropdown from 'react-bootstrap/Dropdown';
+import Dropdown from "react-bootstrap/Dropdown";
 
-import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
-import avatar1 from '../../../assets/images/avatars/0.png';
+import avatar1 from "../../../assets/images/avatars/0.png";
+import { useNavigate } from "react-router-dom";
+import Context from "../../../components/context";
 
 function UserBox(props) {
-    const [user, setUser] = useState({"name": "a", "role": "a"});
-    const handleLogin = () => {
-        if (!localStorage.getItem('token')) {
-            // Nếu chưa đăng nhập, chuyển hướng sang trang đăng nhập
-            window.location.href = '/login';
-            setUser({"name": "b", "role": "b"})
-        } else {
-            // Nếu đã đăng nhập, chuyển hướng sang trang Account
-            window.location.href = '/home/account';
-        }
-    };
+    const { user } = useContext(Context);
+    const navigate = useNavigate();
 
     return (
         <Fragment>
@@ -31,18 +24,40 @@ function UserBox(props) {
                         <div className="widget-content-left">
                             <Dropdown>
                                 <Dropdown.Toggle color="link" className="p-0">
-                                    <img width={42} className="rounded-circle" src={avatar1} alt="" />
-                                    <FontAwesomeIcon className="ms-2 opacity-8" icon={faAngleDown} />
+                                    <img
+                                        width={42}
+                                        className="rounded-circle"
+                                        src={avatar1}
+                                        alt=""
+                                    />
+                                    <FontAwesomeIcon
+                                        className="ms-2 opacity-8"
+                                        icon={faAngleDown}
+                                    />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu className="dropdown-menu-lg">
-                                    <Dropdown.Item onClick={handleLogin}>Accout</Dropdown.Item>
-                                    <Dropdown.Item>Settings</Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() =>
+                                            navigate("/home/account")
+                                        }
+                                    >
+                                        Account
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => navigate("/logout")}
+                                    >
+                                        Log out
+                                    </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
                         <div className="widget-content-left  ms-3 header-user-info">
-                            <div className="widget-heading">{user.name}</div>
-                            <div className="widget-subheading">{user.role}</div>
+                            <div className="widget-heading">
+                                {user["full_name"]}
+                            </div>
+                            <div className="widget-subheading">
+                                Role: {user["role"]}
+                            </div>
                         </div>
                     </div>
                 </div>

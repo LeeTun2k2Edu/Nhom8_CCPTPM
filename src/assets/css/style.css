@@ -4681,7 +4681,7 @@ fieldset:disabled .btn {
     background-color: #fff;
     background-clip: border-box;
     border-radius: 20px;
-    border-color: #E2E8F0;
+    border-color: #e2e8f0;
 }
 .card > hr {
     margin-right: 0;
@@ -6692,6 +6692,11 @@ fieldset:disabled .btn {
 
 .d-flex {
     display: flex !important;
+}
+
+.center {
+    justify-content: center !important;
+    align-items: center !important;
 }
 
 .d-inline-flex {
@@ -11408,29 +11413,34 @@ button,
     opacity: 1 !important;
 }
 
-#login, #signup {
+#login,
+#signup {
     height: 100vh;
 }
 
-#login form, #signup form {
+#login form,
+#signup form {
     width: 25rem;
-
 }
 
-#login label, #signup label{
+#login label,
+#signup label {
     font-size: 1rem;
     padding: 8px 0;
 }
 
-#login .form-group, #signup .form-group {
+#login .form-group,
+#signup .form-group {
     margin-top: 16px;
 }
 
-#login button, #signup button {
+#login button,
+#signup button {
     padding: 8px 32px;
 }
 
-#login .theme, #signup .theme{
+#login .theme,
+#signup .theme {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11446,22 +11456,26 @@ button,
     cursor: pointer;
 }
 
-#login .api, #signup .api{
+#login .api,
+#signup .api {
     font-size: 5rem;
     font-weight: bold;
 }
 
-#login .dashboard, #signup .dashboard {
+#login .dashboard,
+#signup .dashboard {
     font-size: 6rem;
     font-weight: bold;
 }
 
-#login .icon, #signup .icon {
+#login .icon,
+#signup .icon {
     font-size: 2rem;
 }
 
-#login .icon svg, #signup .icon svg {
-    padding: .7rem;
+#login .icon svg,
+#signup .icon svg {
+    padding: 0.7rem;
 }
 
 #header {
@@ -11619,7 +11633,7 @@ button,
     cursor: pointer;
 }
 
-#navbar .navbar-vertical__content{
+#navbar .navbar-vertical__content {
     color: var(--bs-dark);
 }
 
@@ -11654,9 +11668,15 @@ button,
     margin-left: var(--navbar-width);
     padding-top: var(--header-height);
     min-width: 10vw;
+    min-height: 80vh;
 }
 
-#dashboard, #table, #charts-1, #charts-2, #help, #about {
+#dashboard,
+#table,
+#charts-1,
+#charts-2,
+#help,
+#about {
     margin-top: 64px;
 }
 
@@ -11671,10 +11691,27 @@ button,
     color: var(--bs-primary);
 }
 
-#table .select-box {
-    width: 25%;
-    min-width: 200px;
-    margin-bottom: 1rem;
+.select-section {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.select-box {
+    display: flex;
+    align-items: center;
+    min-width: 100px;
+    max-width: 400px;
+    margin: 0;
+    padding: 8px;
+}
+
+.select-box > label {
+    padding-right: 4px;
+}
+
+.select-box > div {
+    flex: 1;
 }
 
 #footer {

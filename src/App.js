@@ -4,6 +4,7 @@ import "./assets/css/style.css";
 import AdminPage from "./pages/admin";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
+import Logout from "./pages/logout";
 import PageNotFound from "./pages/404";
 
 function App(props) {
@@ -14,6 +15,7 @@ function App(props) {
                 <Route path="/home/*" element={<AdminPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/logout" element={<Logout />} />
                 <Route
                     path="/"
                     element={<Navigate replace to="/home/overview" />}

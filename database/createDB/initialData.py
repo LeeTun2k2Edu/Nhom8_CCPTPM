@@ -52,7 +52,7 @@ def add_predict(cursor, id, result):
 
 DATA:dict = json.loads(getData())
 if (DATA):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect('database/database.db')
     cursor = conn.cursor()
     for key, value in DATA.items():
         for k, v in value.items():
@@ -74,6 +74,5 @@ if (DATA):
     conn.commit()
     conn.close()
 
-        
 else:
     raise Exception("Cannot get Data")

@@ -20,57 +20,6 @@ def cleanData():
 def fulldata():
     return jsonify(dbms.get_all_data())
 
-@app.route('/api/user/<username>', methods=['GET'])
-def get_user(username):
-    # Lấy thông tin người dùng từ database hoặc bất kỳ nguồn dữ liệu nào khác
-    user = dbms.get_user_by_username(username)
-    # Trả về thông tin người dùng dưới dạng JSON
-    result = {
-        'username': user[1],
-        'email': user[3],
-        'name': user[4],
-        'role': user[5]
-    }
-    return jsonify(result), 200
-
-@app.route('/api/login', methods=['POST'])
-def login():
-    username = request.json.get('username')
-    password = request.json.get('password')
-    
-    user = dbms.get_user_by_username(username)
-    if user is None:
-        return jsonify({'message': 'Invalid username or password'}), 401
-    
-    if user[2] == password:
-        access_token = 'success'
-        return jsonify({'access_token': access_token, 'username': username}), 200
-    else:
-        return jsonify({'message': 'Invalid username or password'}), 401
-
-@app.route('/api/signup', methods=['POST'])
-def signup():
-    username = request.json.get('username')
-    password = request.json.get('password')
-    email = request.json.get('email')
-    full_name = request.json.get('name')
-    role = 'user'
-
-    # Thực hiện đăng ký tài khoản
-    # Nếu đăng ký thành công, trả về thông báo thành công
-    # Nếu đăng ký thất bại, trả về mã lỗi và thông báo lỗi tương ứng
-    
-    # Kiểm tra xem username đã tồn tại trong bảng chưa
-    user = dbms.get_user_by_username(username)
-    if user is not None:
-        return jsonify({'message': 'Username already exists'}), 409
-    
-    # Thêm user vào bảng
-    dbms.add_user(username, password, email, full_name, role)
-    
-    # Trả về thông báo thành công
-    return jsonify({'message': 'Signup success'}), 200
-
 @app.route('/api/options') 
 def locations(): # Lấy tất cả key trong DATA
     return jsonify({
@@ -83,44 +32,117 @@ def locations(): # Lấy tất cả key trong DATA
 
 @app.route('/api/data-table')
 def dataTable(): 
-    location = request.args.get('location')
-    status = request.args.get('status')
-    angle = request.args.get('angle')
-    hardData = dbms.get_data_by_filtered(location=location, status=status, angle=angle)
-    data = []
-    for index, item in enumerate(hardData):
-        data.append({
-            "stt": index+1,
-            "date": item[0],
-            "angle_id": item[1],
-            "status": item[2],
-            "predict_result": item[3] 
-        })
-    return jsonify(data)
+    try:
+        location = request.args.get('location')
+        status = request.args.get('status')
+        angle = request.args.get('angle')
+
+        hardData = dbms.get_data_by_filtered(location=location, status=status, angle=angle)
+        data = []
+        
+        for index, item in enumerate(hardData):
+            data.append({
+                "stt": index+1,
+                "date": item[0],
+                "angle_id": item[1],
+                "status": item[2],
+                "predict_result": item[3] 
+            })
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/overview')
 def overview():
-    ok_records = dbms.get_number_records_with_status('ok')
-    fail_records = dbms.get_number_records_with_status('fail')
-    ok_angles = dbms.get_number_angle_with_status('ok')
-    fail_angles = dbms.get_number_angle_with_status('fail')
-    predict_result_statistic = dbms.get_statistic_predict_result()
+    try:
+        dayStart = request.args.get('dayStart')
+        dayEnd = request.args.get('dayEnd')
+        if dayStart > dayEnd: dayEnd = dayStart
 
-    data = {
-        "ok_records": ok_records[0][0],
-        "fail_records": fail_records[0][0],
-        "ok_angles": ok_angles,
-        "fail_angles": fail_angles,
-        "predict_result_statistic": predict_result_statistic
-    }
-    return jsonify(data)
+        ok_records = dbms.get_number_records_with_status('ok', dayStart, dayEnd)
+        fail_records = dbms.get_number_records_with_status('fail', dayStart, dayEnd)
+        ok_angles = dbms.get_number_angle_with_status('ok', dayStart, dayEnd)
+        fail_angles = dbms.get_number_angle_with_status('fail', dayStart, dayEnd)
+        predict_result_statistic = dbms.get_statistic_predict_result(dayStart, dayEnd)
+
+        data = {
+            "ok_records": ok_records[0][0],
+            "fail_records": fail_records[0][0],
+            "ok_angles": ok_angles,
+            "fail_angles": fail_angles,
+            "predict_result_statistic": predict_result_statistic
+        }
+        return jsonify(data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/test')
 def test():
     return jsonify()
 
+@app.route('/api/users')
+def getAllUsers():
+    return jsonify(dbms.get_all_user())
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    try:
+        username = request.json.get('username')
+        password = request.json.get('password')
+
+        user = dbms.get_user_by_username(username)
+        if user and user[1]==password:
+            return jsonify({
+                'username': user[0],
+                'password': user[1],
+                'email': user[2], 
+                'full_name': user[3], 
+                'image':user[4], 
+                'role':user[5]
+            }), 200
+        else:
+            return jsonify({'error': 'Invalid username or password.'}), 401
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+    
+@app.route('/api/signup', methods=['POST'])
+def signup():
+    try:
+        username = request.json.get('username')
+        password = request.json.get('password')
+        email = request.json.get('email')
+        full_name = request.json.get('full_name')
+
+        user = dbms.get_user_by_username(username)
+
+        if not user:
+            dbms.add_user(username=username, password=password, email=email, full_name=full_name)
+            return jsonify({'message': 'Signup successful!'}), 200
+        
+        else:
+            return jsonify({'error': 'Username already exists!'}), 409
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+    
+@app.route('/api/users/<username>', methods=['PUT'])
+def edit_user(username):
+    try:
+        password = request.json.get('password')
+        email = request.json.get('email')
+        full_name = request.json.get('full_name')
+        image = request.json.get('image')
+        role = request.json.get('role')
+
+        dbms.edit_user(username=username, password=password, email=email, full_name=full_name,image=image, role=role)
+        return jsonify({'message': 'User information updated!'})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
 if __name__ == '__main__':
     app.debug=True
     cleanData()
-    print(dbms.get_all_user())
     app.run(host="localhost")
