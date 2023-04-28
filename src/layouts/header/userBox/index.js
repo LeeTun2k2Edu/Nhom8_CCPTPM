@@ -25,9 +25,8 @@ function UserBox(props) {
                             <Dropdown>
                                 <Dropdown.Toggle color="link" className="p-0">
                                     <img
-                                        width={42}
                                         className="rounded-circle"
-                                        src={avatar1}
+                                        src={user["image"]==="guest"?avatar1:user["image"]}
                                         alt=""
                                     />
                                     <FontAwesomeIcon
@@ -51,7 +50,7 @@ function UserBox(props) {
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
-                        <div className="widget-content-left  ms-3 header-user-info">
+                        <div className="widget-content-left ms-3 header-user-info">
                             <div className="widget-heading">
                                 {user["full_name"]}
                             </div>

@@ -11,7 +11,6 @@ function Admin(props) {
     const [user, setUser] = useState({ full_name: "guest", role: "guest" });
 
     const userJSON = Cookies.get("user");
-    console.log(userJSON);
     useEffect(() => {
         if (userJSON) {
             setUser(JSON.parse(userJSON));

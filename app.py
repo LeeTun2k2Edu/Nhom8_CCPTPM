@@ -134,7 +134,6 @@ def edit_user(username):
         full_name = request.json.get('full_name')
         image = request.json.get('image')
         role = request.json.get('role')
-
         dbms.edit_user(username=username, password=password, email=email, full_name=full_name,image=image, role=role)
         return jsonify({'message': 'User information updated!'})
 
@@ -145,4 +144,5 @@ def edit_user(username):
 if __name__ == '__main__':
     app.debug=True
     cleanData()
+    # dbms.edit_user('admin', 'admin', 'admin@admin.admin', 'Le Quang Admin', 'guest', 'admin')
     app.run(host="localhost")

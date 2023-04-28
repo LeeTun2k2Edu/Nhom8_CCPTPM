@@ -6,6 +6,7 @@ import Charts from "../../components/charts-1";
 import Help from "../../components/help";
 import About from "../../components/about";
 import Empty from "../../components/empty";
+import Account from "../../components/account";
 
 function Main(props) {
     return (
@@ -13,6 +14,7 @@ function Main(props) {
             <div id="main">
                 <Routes>
                     <Route path="*" element={<Empty />} />
+                    <Route path="/account" element={<Account />} />
                     <Route path="/overview" element={<Dashboard />} />
                     <Route path="/data-tables" element={<Table/>} />
                     <Route path="/charts" element={<Charts />} />

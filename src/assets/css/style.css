@@ -11424,13 +11424,13 @@ button,
 }
 
 #login label,
-#signup label {
+#signup label,
+#account label {
     font-size: 1rem;
     padding: 8px 0;
 }
 
-#login .form-group,
-#signup .form-group {
+.form-group{
     margin-top: 16px;
 }
 
@@ -11492,6 +11492,12 @@ button,
     width: 100%;
     height: var(--header-height);
     z-index: 2;
+}
+
+#header img {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
 }
 
 .widget-content {
@@ -11660,6 +11666,12 @@ button,
     margin-inline-end: auto;
 }
 
+.avatar {
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
+}
+
 #navbar .calendar {
     padding: 16px;
 }
@@ -11676,7 +11688,8 @@ button,
 #charts-1,
 #charts-2,
 #help,
-#about {
+#about, 
+#account{
     margin-top: 64px;
 }
 
@@ -11685,7 +11698,8 @@ button,
 #charts-1 .charts-header,
 #charts-2 .charts-header,
 #help .help-header,
-#about .about-header {
+#about .about-header,
+#account .account-header{
     margin-bottom: 8px;
     font-weight: bold;
     color: var(--bs-primary);

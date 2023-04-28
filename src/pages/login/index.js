@@ -38,19 +38,11 @@ function Login(props) {
                         password: password,
                     })
                     .catch((error) => {
-                        toast.error(error.response.data.error, {
-                            position: "top-right",
-                            autoClose: 3000,
-                            hideProgressBar: true,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                        });
+                        toast.error(error.response.data.error);
                     });
 
                 Cookies.set("user", JSON.stringify(response.data));
-                setIsLoggedIn(true);
+                setIsLoggedIn(true)
             }
             sendData();
         } catch (error) {

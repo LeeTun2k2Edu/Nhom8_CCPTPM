@@ -8,7 +8,7 @@ c.execute('''CREATE TABLE Users(
             password varchar(40) not null, 
             email varchar(40) not null, 
             full_name nvarchar(40) not null, 
-            image nvarchar(100) not null,
+            image text,
             role varchar(10) not null);''')
 
 c.execute('''CREATE TABLE Data(

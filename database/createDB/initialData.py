@@ -76,3 +76,6 @@ if (DATA):
 
 else:
     raise Exception("Cannot get Data")
+
+import database.dbms as dbms
+dbms.add_user('admin', 'admin', 'admin@admin.admin', 'Le Quang Admin', 'guest', 'user')
