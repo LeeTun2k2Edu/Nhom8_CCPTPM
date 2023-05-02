@@ -1,0 +1,15 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: api
+    ports:
+      - "5000:5000"
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    image: client
+    ports:
+      - "3000:3000"
