@@ -10,18 +10,15 @@ MONTH = 12
 STATUS = ["-","ok", "fail"]
 ANGLES = ["-", 1, 2, 3, 4, 5, 6, 7]
 
-def cleanData():
-    data = dbms.get_all_data()
-    for item in data:
-        if (item[1] not in LOCATIONS):
-            LOCATIONS.append(item[1])
-
 @app.route('/')
 def fulldata():
     return jsonify(dbms.get_all_data())
 
 @app.route('/api/options') 
-def locations(): # Lấy tất cả key trong DATA
+def getlocations(): # Lấy tất cả key trong DATA
+    locations = dbms.get_locations()
+    for location in locations:
+        LOCATIONS.append(location[0])
     return jsonify({
         "LOCATIONS":LOCATIONS, 
         "YEAR":YEAR, 
@@ -142,5 +139,4 @@ def edit_user(username):
 
 
 if __name__ == '__main__':
-    cleanData()
-    app.run(host='0.0.0.0')
+    app.run(host="0.0.0.0")
