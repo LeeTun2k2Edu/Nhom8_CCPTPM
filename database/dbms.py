@@ -81,6 +81,17 @@ def get_all_data():
     conn.close()
     return result
 
+def get_locations():
+    conn = sqlite3.connect('database/database.db')
+    c = conn.cursor()
+    try:
+        c.execute("SELECT DISTINCT location FROM data")
+    except Exception as e:
+        print(str(e))
+    result = c.fetchall()
+    conn.close()
+    return result
+
 def get_all_predict_result():
     conn = sqlite3.connect('database/database.db')
     c = conn.cursor()
