@@ -1,5 +1,5 @@
 # This Dockerfile builds the API only.
-FROM python:3.10
+FROM python:3.7
 
 WORKDIR /app
 
