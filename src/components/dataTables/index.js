@@ -20,37 +20,31 @@ function Table(props) {
             setData([]);
             if (!locations) {
                 await axios
-                    .get("http://localhost:5000/api/options")
+                    .get("/api/options")
                     .then((response1) => {
                         setLocations(response1.data["LOCATIONS"]);
                         setStatus(response1.data["STATUS"]);
                         setAngles(response1.data["ANGLES"]);
                         setLocation(response1.data["LOCATIONS"][1]);
-                        return axios.get(
-                            "http://localhost:5000/api/data-table",
-                            {
-                                params: {
-                                    location: response1.data["LOCATIONS"][1],
-                                    status: statusDetail,
-                                    angle: angle,
-                                },
-                            }
-                        );
+                        return axios.get("/api/data-table", {
+                            params: {
+                                location: response1.data["LOCATIONS"][1],
+                                status: statusDetail,
+                                angle: angle,
+                            },
+                        });
                     })
                     .then((response2) => {
                         setData(response2.data);
                     });
             } else {
-                const result = await axios.get(
-                    "http://localhost:5000/api/data-table",
-                    {
-                        params: {
-                            location: location,
-                            status: statusDetail,
-                            angle: angle,
-                        },
-                    }
-                );
+                const result = await axios.get("/api/data-table", {
+                    params: {
+                        location: location,
+                        status: statusDetail,
+                        angle: angle,
+                    },
+                });
                 setData(result.data);
             }
         }, 1000);
