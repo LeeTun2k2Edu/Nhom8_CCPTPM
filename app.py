@@ -12,7 +12,7 @@ ANGLES = ["-", 1, 2, 3, 4, 5, 6, 7]
 
 @app.route('/')
 def fulldata():
-    return jsonify(dbms.get_all_data())
+    return jsonify("flask hello")
 
 @app.route('/api/options') 
 def getlocations(): # Lấy tất cả key trong DATA

@@ -11453,7 +11453,6 @@ button,
     color: var(--bs-white);
     user-select: none;
     border-radius: 25% 0 10% 50%;
-    cursor: pointer;
 }
 
 #login .api,

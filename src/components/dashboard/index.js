@@ -18,7 +18,7 @@ function Dashboard(props) {
     useEffect(() => {
         const fetchData = debounce(async function () {
             const result = await axios.get(
-                "http://localhost:5000/api/overview",
+                "/api/overview",
                 {
                     params: {
                         dayStart: 1,
