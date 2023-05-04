@@ -33,7 +33,7 @@ function Login(props) {
         try {
             async function sendData() {
                 const response = await axios
-                    .post("http://localhost:5000/api/login", {
+                    .post("/api/login", {
                         username: username,
                         password: password,
                     })
@@ -42,7 +42,7 @@ function Login(props) {
                     });
 
                 Cookies.set("user", JSON.stringify(response.data));
-                setIsLoggedIn(true)
+                setIsLoggedIn(true);
             }
             sendData();
         } catch (error) {
@@ -103,10 +103,7 @@ function Login(props) {
                             </div>
                         </form>
                     </Col>
-                    <Col
-                        className="lg-6 h-100 w-100 theme"
-                        onClick={() => (document.location.href = "/")}
-                    >
+                    <Col className="lg-6 h-100 w-100 theme">
                         <div className="api">Api</div>
                         <div className="dashboard">Dashboard</div>
                         <div className="icon">
