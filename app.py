@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import database.dbms as dbms
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="./build", static_url_path="/")
 CORS(app)
 LOCATIONS = ["-"]
 YEAR = 2022
