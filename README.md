@@ -6,47 +6,36 @@
 Trước khi cài đặt Flask, bạn cần cài đặt Python trên máy tính của bạn.
 > https://www.python.org/downloads/
 
-### 2. Cài đặt Flask
-Để cài đặt Flask, bạn có thể sử dụng pip, công cụ quản lý package Python. Chạy lệnh sau để cài đặt Flask: 
-> pip install Flask
-### 3. Cài đặt ReactJS
+### 2. Cài đặt ReactJS
 Để cài đặt ReactJS, bạn cần cài đặt Node.js trên máy tính của mình. 
 > https://nodejs.org/en/download
 
-Sau đó, bạn cần cài đặt ReactJS bằng npm. Mở cửa sổ terminal và chạy lệnh sau:
->npm install -g create-react-app
-
-### 4. Cài đặt các dependencies
-Để cài đặt các dependencies cho client và server, bạn cần mở terminal và thực hiện các lệnh sau:
-- Client-side:
-```
-cd api-dashboard
-npm install
-```
-- Server-side:
-``` 
-cd python
-pip install -r requirements.txt
-```
 ## Cách sử dụng
 ### 1. Khởi động server Flask
 Để khởi động server Flask, mở terminal và thực hiện các lệnh sau:
 ```
-cd python
-python app.py
+venv/Scripts/activate
 ```
-Server sẽ được khởi động và sẵn sàng để phục vụ các request từ client.
+```
+pip install -r requirements.txt
+```
+```
+flask run
+```
 
 ### 2. Khởi động client ReactJS
-Để khởi động client ReactJS, mở terminal và thực hiện các lệnh sau:
+Để khởi động client ReactJS, mở terminal khác và thực hiện các lệnh sau:
 ```
-cd client
+npm install
+```
+```
 npm start
 ```
 Trình duyệt của bạn sẽ tự động mở và hiển thị trang web của client.
 
 ### 3. Hiển thị dashboard
-Sau khi khởi động client và server, trang web sẽ hiển thị dashboard. 
+Sau khi khởi động client và server, trang web sẽ hiển thị dashboard.
+ 
 ### 4. Thay đổi cấu hình
 Nếu bạn muốn thay đổi cấu hình của server, bạn có thể sửa đổi tệp config.py trong thư mục server. Các cấu hình có thể được thay đổi bao gồm cổng của server, URL của API và các thông tin xác thực.
 
