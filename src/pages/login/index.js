@@ -10,7 +10,7 @@ import {
     faCircleQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -90,7 +90,7 @@ function Login(props) {
                             <div className="d-flex justify-content-end">
                                 <small className="mb-3 mt-1">
                                     You don't have an account yet?{" "}
-                                    <a href="/signup">Sign up here</a>
+                                    <Link to="/signup">Sign up here</Link>
                                 </small>
                             </div>
                             <div className="d-flex justify-content-center w-100">
