@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import database.dbms as dbms
 
-app = Flask(__name__, static_folder="./build", static_url_path="/")
+app = Flask(__name__)
 CORS(app)
 LOCATIONS = ["-"]
 YEAR = 2022
@@ -12,7 +12,7 @@ ANGLES = ["-", 1, 2, 3, 4, 5, 6, 7]
 
 @app.route('/')
 def fulldata():
-    return jsonify("flask hello")
+    return jsonify("hello")
 
 @app.route('/api/options') 
 def getlocations(): # Lấy tất cả key trong DATA

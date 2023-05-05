@@ -24,7 +24,7 @@ flask run
 ```
 
 ### 2. Khởi động client ReactJS
-Để khởi động client ReactJS, mở terminal và thực hiện các lệnh sau:
+Để khởi động client ReactJS, mở terminal khác và thực hiện các lệnh sau:
 ```
 npm install
 ```
