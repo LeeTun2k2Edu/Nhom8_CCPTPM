@@ -1,14 +1,18 @@
-# This Dockerfile builds the API only.
-FROM python:3.7
+FROM python:3.10
 
 WORKDIR /app
 
-COPY requirements.txt app.py ./
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+RUN python -m venv venv
+
+ENV PATH="/app/venv/bin:$PATH"
+
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
+
+COPY app.py .flaskenv ./
 
 COPY database ./database
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["flask", "run", "--host=0.0.0.0"]
