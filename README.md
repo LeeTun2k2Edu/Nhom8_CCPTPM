@@ -1,41 +1,35 @@
 # Phát triển Dashboard hiện thông tin từ API
 Đây là một dự án hiển thị dữ liệu từ API sử dụng ReactJS và Flask phục vụ cho báo cáo cuối kỳ môn học Công cụ và môi trường phát triển phần mềm do GV: Huỳnh Xuân Phụng Trường Đại Học Sư Phạm Kỹ Thuật TP. HCM Giảng dạy.
 
-## Cài đặt
-### 1. Cài đặt Python
-Trước khi cài đặt Flask, bạn cần cài đặt Python trên máy tính của bạn.
-> https://www.python.org/downloads/
-
-### 2. Cài đặt ReactJS
-Để cài đặt ReactJS, bạn cần cài đặt Node.js trên máy tính của mình. 
-> https://nodejs.org/en/download
+## Cài đặt (trên windows)
+### Cài đặt Docker
+Trước tiên, bạn cần cài đặt Docker destop.
+> https://www.docker.com/products/docker-desktop/
+Sau khi cài đặt hoàn tất, bạn cần chạy ứng dụng docker desktop để khởi động docker deamon service (Không mở docker desktop không chạy docker được).
 
 ## Cách sử dụng
-### 1. Khởi động server Flask
-Để khởi động server Flask, mở terminal và thực hiện các lệnh sau:
+### 1. Dockerfile (có sẵn)
+Là file hướng dẫn docker cách build image.
+
+### 2. Build docker image
+Để build image, ta sử dụng lệnh
 ```
-venv/Scripts/activate
+docker build -t app
 ```
+Sau khi build hoàn tất, ta dùng lệnh 
 ```
-pip install -r requirements.txt
+docker images
 ```
+để kiểm tra image đã được tạo đúng hay chưa
+
+### 3. Run image
+Sử dụng lệnh:
 ```
-flask run
+docker run -p 80:3000 app
 ```
 
-### 2. Khởi động client ReactJS
-Để khởi động client ReactJS, mở terminal khác và thực hiện các lệnh sau:
-```
-npm install
-```
-```
-npm start
-```
-Trình duyệt của bạn sẽ tự động mở và hiển thị trang web của client.
+-p 80:3000 là lệnh chuyển đổi từ port 3000 sang port 80. Port 80 là port http dùng để đưa app lên internet.
 
-### 3. Hiển thị dashboard
-Sau khi khởi động client và server, trang web sẽ hiển thị dashboard.
- 
 ### 4. Thay đổi cấu hình
 Nếu bạn muốn thay đổi cấu hình của server, bạn có thể sửa đổi tệp config.py trong thư mục server. Các cấu hình có thể được thay đổi bao gồm cổng của server, URL của API và các thông tin xác thực.
 
