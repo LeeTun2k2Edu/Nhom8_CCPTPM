@@ -1,8 +1,8 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import database.dbms as dbms
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="./build", static_url_path="/")
 CORS(app)
 LOCATIONS = ["-"]
 YEAR = 2022
@@ -11,8 +11,8 @@ STATUS = ["-","ok", "fail"]
 ANGLES = ["-", 1, 2, 3, 4, 5, 6, 7]
 
 @app.route('/')
-def fulldata():
-    return jsonify("hello")
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/api/options') 
 def getlocations(): # Lấy tất cả key trong DATA
