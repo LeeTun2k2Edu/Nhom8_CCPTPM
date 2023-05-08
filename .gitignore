@@ -23,6 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # python file
+.pyc
 .installed.cfg
 bin
 develop-eggs
