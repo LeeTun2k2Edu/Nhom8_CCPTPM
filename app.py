@@ -1,12 +1,13 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import database.dbms as dbms
+from datetime import date
 
 app = Flask(__name__)
 CORS(app)
 LOCATIONS = ["-"]
-YEAR = 2022
-MONTH = 12
+YEAR = [i for i in range(2022, date.today().year+1)]
+MONTH = ["-", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 STATUS = ["-","ok", "fail"]
 ANGLES = ["-", 1, 2, 3, 4, 5, 6, 7]
 
@@ -73,10 +74,6 @@ def overview():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-@app.route('/api/test')
-def test():
-    return jsonify()
-
 @app.route('/api/users')
 def getAllUsers():
     return jsonify(dbms.get_all_user())
@@ -137,7 +134,11 @@ def edit_user(username):
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/api/test')
+def test():
+    return jsonify()
+
 
 if __name__ == '__main__':
     app.debug=True
-    app.run(host="0.0.0.0")
+    app.run()
