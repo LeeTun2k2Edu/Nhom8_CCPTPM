@@ -1,4 +1,17 @@
 import sqlite3
+from datetime import date
+
+def get_top_data(limit: int):
+    conn = sqlite3.connect('database/database.db')
+    cursor = conn.cursor()
+    try:
+        #cursor.execute("select * from data limit ?", (limit))
+        cursor.execute("select * from data")
+    except Exception as e:
+        print(str(e))
+    conn.commit()
+    conn.close()
+
 def add_user(username:str, password:str, email:str, full_name:str, image:str = "guest", role:str = "user"):
     conn = sqlite3.connect('database/database.db')
     cursor = conn.cursor()
@@ -58,52 +71,18 @@ def get_all_user():
     conn.close()
     return result
 
-def get_all_table():
+def get_locations(month:int, year:int):
     conn = sqlite3.connect('database/database.db')
     c = conn.cursor()
     try:
-        c.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    except Exception as e:
-        print(str(e))
-    tables = c.fetchall()
-    for table in tables:
-        print(table[0])
-    conn.close()
-
-def get_all_data():
-    conn = sqlite3.connect('database/database.db')
-    c = conn.cursor()
-    try:
-        c.execute("SELECT * FROM data")
+        c.execute("SELECT DISTINCT location FROM data where month=? and year=?", (month, year))
     except Exception as e:
         print(str(e))
     result = c.fetchall()
     conn.close()
     return result
 
-def get_locations():
-    conn = sqlite3.connect('database/database.db')
-    c = conn.cursor()
-    try:
-        c.execute("SELECT DISTINCT location FROM data")
-    except Exception as e:
-        print(str(e))
-    result = c.fetchall()
-    conn.close()
-    return result
-
-def get_all_predict_result():
-    conn = sqlite3.connect('database/database.db')
-    c = conn.cursor()
-    try:
-        c.execute("SELECT * FROM predict_results")
-    except Exception as e:
-        print(str(e))
-    result = c.fetchall()
-    conn.close()
-    return result
-
-def get_data_by_filtered(location, status, angle):
+def get_data_by_filtered(location:str, status:str, angle:int, month:int, year:int):
     conn = sqlite3.connect('database/database.db')
     c = conn.cursor()
     try:
@@ -123,6 +102,12 @@ def get_data_by_filtered(location, status, angle):
         if (angle != '-'): 
             sql += f'angle_id=? and '  
             params.append(angle)
+        if (month != '-'): 
+            sql += f'month=? and '  
+            params.append(angle)
+        if (year != '-'): 
+            sql += f'year=? and '  
+            params.append(angle)
         sql = sql[:-4]
         c.execute(sql, params)
         result = c.fetchall()
@@ -131,7 +116,7 @@ def get_data_by_filtered(location, status, angle):
     conn.close()
     return result
 
-def get_number_records_with_status(status, dayStart, dayEnd):
+def get_number_records_with_status(status:str, dayStart:int, dayEnd:int):
     conn = sqlite3.connect('database/database.db')
     c = conn.cursor()
     try:
@@ -142,7 +127,7 @@ def get_number_records_with_status(status, dayStart, dayEnd):
     conn.close()
     return result
 
-def get_number_angle_with_status(status, dayStart, dayEnd):
+def get_number_angle_with_status(status:str, dayStart:int, dayEnd:int):
     conn = sqlite3.connect('database/database.db')
     c = conn.cursor()
     try:
@@ -153,7 +138,7 @@ def get_number_angle_with_status(status, dayStart, dayEnd):
     conn.close()
     return result
 
-def get_statistic_predict_result(dayStart, dayEnd):
+def get_statistic_predict_result(dayStart:int, dayEnd:int):
     conn = sqlite3.connect('database/database.db')
     c = conn.cursor()
     try:

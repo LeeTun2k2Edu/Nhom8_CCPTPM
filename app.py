@@ -17,16 +17,24 @@ def fulldata():
 
 @app.route('/api/options') 
 def getlocations(): # Lấy tất cả key trong DATA
-    locations = dbms.get_locations()
-    for location in locations:
-        LOCATIONS.append(location[0])
-    return jsonify({
-        "LOCATIONS":LOCATIONS, 
-        "YEAR":YEAR, 
-        "MONTH":MONTH, 
-        "STATUS":STATUS, 
-        "ANGLES":ANGLES
-    })
+    try:
+        year = request.args.get('year')
+        month = request.args.get('month')
+
+        locations = dbms.get_locations(month=month, year=year)
+        for location in locations:
+            LOCATIONS.append(location[0])
+
+        return jsonify({
+            "LOCATIONS":LOCATIONS, 
+            "YEAR":YEAR, 
+            "MONTH":MONTH, 
+            "STATUS":STATUS, 
+            "ANGLES":ANGLES
+        }), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/data-table')
 def dataTable(): 
@@ -136,7 +144,10 @@ def edit_user(username):
 
 @app.route('/api/test')
 def test():
-    return jsonify()
+    limit = request.args.get("limit")
+    print(limit)
+    data = dbms.get_top_data(limit)
+    return jsonify(data), 200
 
 
 if __name__ == '__main__':

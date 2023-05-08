@@ -23,9 +23,7 @@ def createDB():
                 id varchar(40) primary key,
                 location varchar(40) not null,
                 angle_id int not null,
-                day int not null,
-                month int not null,
-                year int not null,
+                date date not null,
                 status varchar(4) not null);''')
 
     c.execute('''CREATE TABLE Predict_Results(
@@ -69,11 +67,11 @@ def getData(month, year, token):
 
     return response.text  
 
-def add_data(cursor, id , location, angle_id, day, month, year, status):
+def add_data(cursor, id , location, angle_id, date, status):
     cursor.execute("""
-        INSERT INTO data (id , location, angle_id, day, month, year, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (id , location, angle_id, day, month, year, status))
+        INSERT INTO data (id , location, angle_id, date, status)
+        VALUES (?, ?, ?, ?, ?)
+    """, (id , location, angle_id, date, status))
 
 def add_predict(cursor, id, result):
     cursor.execute("""
@@ -94,9 +92,7 @@ def load_Data_to_DB():
                     id=k,
                     location=key,
                     angle_id=v["angle_id"],
-                    day=date.day,
-                    month=date.month,
-                    year=date.year,
+                    date=date.date(),
                     status=v["status"]
                 )
                 predict_result = v["predict_result"]
@@ -123,7 +119,6 @@ if __name__ == '__main__':
             DATA:dict = json.loads(getData(month=month, year=year, token=token))
             print(f"Month {month}/{year}: {len(DATA)} keys data")
             load_Data_to_DB()
-
 
 import database.dbms as dbms
 dbms.add_user('admin', 'admin', 'admin@admin.admin', 'Admin', 'guest', 'user')
