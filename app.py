@@ -126,14 +126,15 @@ def login():
         password = request.json.get('password')
 
         user = dbms.get_user_by_username(username)
-        if user and user[1] == password:
+
+        if user and user[0][1] == password:
             return jsonify({
-                'username': user[0],
-                'password': user[1],
-                'email': user[2],
-                'full_name': user[3],
-                'image': user[4],
-                'role': user[5]
+                'username': user[0][0],
+                'password': user[0][1],
+                'email': user[0][2],
+                'full_name': user[0][3],
+                'image': user[0][4],
+                'role': user[0][5]
             }), 200
         else:
             return jsonify({'error': 'Invalid username or password.'}), 401
