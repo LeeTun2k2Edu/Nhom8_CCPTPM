@@ -119,6 +119,3 @@ if __name__ == '__main__':
             DATA:dict = json.loads(getData(month=month, year=year, token=token))
             print(f"Month {month}/{year}: {len(DATA)} keys data")
             load_Data_to_DB()
-
-import database.dbms as dbms
-dbms.add_user('admin', 'admin', 'admin@admin.admin', 'Admin', 'guest', 'user')
