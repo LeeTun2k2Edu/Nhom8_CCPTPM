@@ -151,7 +151,7 @@ function Signup() {
                             <div className="d-flex justify-content-end">
                                 <small className="mb-3 mt-1">
                                     Already have an account?
-                                    <Link to="/signup">Log in here</Link>
+                                    <Link to="/login">Log in here</Link>
                                 </small>
                             </div>
                             <div className="d-flex justify-content-center w-100">
