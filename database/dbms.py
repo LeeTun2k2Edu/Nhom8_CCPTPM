@@ -2,9 +2,12 @@ import sqlite3
 from datetime import date
 
 def execute_query(query, *params):
+    '''
+        For SELECT queries only
+    '''
     conn = sqlite3.connect('database/database.db')
     c = conn.cursor()
-    
+
     try:
         c.execute(query, params)
         result = c.fetchall()
@@ -14,6 +17,24 @@ def execute_query(query, *params):
         
     conn.close()
     return result
+
+
+def execute_update_query(query, *params):
+    '''
+        For INSERT, UPDATE, and DELETE queries
+    '''
+    conn = sqlite3.connect('database/database.db')
+    c = conn.cursor()
+
+    try:
+        c.execute(query, params)
+        conn.commit()
+        return True
+    except Exception as e:
+        print(str(e))
+        return False
+    finally:
+        conn.close()
 
 
 def get_top_data(limit: int):
@@ -26,7 +47,7 @@ def add_user(username: str, password: str, email: str, full_name: str, image: st
         INSERT INTO users (username, password, email, full_name, image, role)
         VALUES (?, ?, ?, ?, ?, ?)
     """
-    execute_query(query, username.lower(), password, email.lower(), full_name, image, role.lower())
+    execute_update_query(query, username.lower(), password, email.lower(), full_name, image, role.lower())
 
 
 def edit_user(username: str, password: str, email: str, full_name: str, image: str, role: str = 'user'):
@@ -35,12 +56,12 @@ def edit_user(username: str, password: str, email: str, full_name: str, image: s
         SET password = ?, email = ?, full_name = ?, image = ?, role = ?
         WHERE username = ?
     """
-    execute_query(query, password, email.lower(), full_name, image, role.lower(), username.lower())
+    execute_update_query(query, password, email.lower(), full_name, image, role.lower(), username.lower())
 
 
 def delete_user(username: str):
     query = "DELETE FROM users WHERE id = ?"
-    execute_query(query, username.lower())
+    execute_update_query(query, username.lower())
 
 
 def get_user_by_username(username: str):

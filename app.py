@@ -188,5 +188,4 @@ def test():
 
 if __name__ == '__main__':
     app.debug = True
-    dbms.add_user('leetun2k2', 'admin', 'admin@admin.admin', 'Admin')
     app.run()
