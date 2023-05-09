@@ -5,8 +5,7 @@ def get_top_data(limit: int):
     conn = sqlite3.connect('database/database.db')
     cursor = conn.cursor()
     try:
-        #cursor.execute("select * from data limit ?", (limit))
-        cursor.execute("select * from data")
+        cursor.execute("select * from data limit ?", (limit))
     except Exception as e:
         print(str(e))
     conn.commit()

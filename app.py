@@ -13,7 +13,7 @@ ANGLES = ["-", 1, 2, 3, 4, 5, 6, 7]
 
 @app.route('/')
 def fulldata():
-    return jsonify("hello")
+    return jsonify("hi")
 
 @app.route('/api/options') 
 def getlocations(): # Lấy tất cả key trong DATA
@@ -145,7 +145,6 @@ def edit_user(username):
 @app.route('/api/test')
 def test():
     limit = request.args.get("limit")
-    print(limit)
     data = dbms.get_top_data(limit)
     return jsonify(data), 200
 
