@@ -9,8 +9,8 @@ import {
     Legend,
 } from "recharts";
 
-function BarChartComponent(props) {
-    const { data, width, height, axis, legend, color, name } = props;
+function BarChart_2Col_Component(props) {
+    const { data, width, height, axis, legend} = props;
 
     return (
         <BarChart width={width} height={height} data={data}>
@@ -19,13 +19,9 @@ function BarChartComponent(props) {
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip />
             {legend ? <Legend /> : null}
-            <Bar
-                dataKey={name ? name : "value"}
-                stroke={color ? color : "#8884d8"}
-                fill={color ? color : "#8884d8"}
-            />
+            <Bar dataKey="ok" stroke="#8884d8" fill="#8884d8" />
         </BarChart>
     );
 }
 
-export default BarChartComponent;
+export default BarChart_2Col_Component;

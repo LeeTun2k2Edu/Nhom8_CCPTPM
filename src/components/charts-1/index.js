@@ -2,7 +2,8 @@ import { Card, Col, Container, Row } from "react-bootstrap";
 import { debounce } from "lodash";
 import axios from "axios";
 import PieChartComponent from "../pieChartComponent";
-import BarChartComponent from "../barChartComponent";
+import BarChart2ColComponent from "../barChart_2Col_Component";
+import BarChart1ColComponent from "../barChart_1Col_Component";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 
@@ -165,7 +166,7 @@ function Charts1(props) {
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container d-flex center">
                             <h5 className="p-3 ms-5">Ok angles</h5>
-                            <BarChartComponent
+                            <BarChart1ColComponent
                                 data={ok_angles.map((item) => {
                                     return {
                                         name: item[0],
@@ -188,7 +189,7 @@ function Charts1(props) {
                             <h5 className="p-3 ms-5">
                                 Predict result statistic
                             </h5>
-                            <BarChartComponent
+                            <BarChart1ColComponent
                                 data={predict_result_statistic.map((item) => {
                                     return {
                                         name: item[0],
@@ -206,7 +207,7 @@ function Charts1(props) {
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container d-flex center">
                             <h5 className="p-3 ms-5">Fail Angles</h5>
-                            <BarChartComponent
+                            <BarChart1ColComponent
                                 data={fail_angles.map((item) => {
                                     return {
                                         name: item[0],
