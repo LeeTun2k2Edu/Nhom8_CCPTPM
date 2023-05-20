@@ -7,11 +7,15 @@ import axios from "axios";
 import MyDateTimePicker from "../datetimePicker";
 
 function Table(props) {
-    var currentDate = new Date();
+    const currentDate = new Date();
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-    const [selectedStartDateTime, setSelectedStartDateTime] = useState(currentDate);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-    const [selectedEndDateTime, setSelectedEndDateTime] = useState(currentDate);
+    const [selectedStartDateTime, setSelectedStartDateTime] = useState(
+        new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+    );
+    const [selectedEndDateTime, setSelectedEndDateTime] = useState(
+        new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+    );
 
     const handleButtonStartDateClick = () => {
         setShowStartDatePicker(!showStartDatePicker);
@@ -60,7 +64,6 @@ function Table(props) {
                         setLocations(response1.data["LOCATIONS"]);
                         setStatus(response1.data["STATUS"]);
                         setAngles(response1.data["ANGLES"]);
-                        setLocation(response1.data["LOCATIONS"][1]);
 
 
                         return axios.get("/api/data-table", {
@@ -158,12 +161,7 @@ function Table(props) {
                                 return { label: location, value: location };
                             })}
                             defaultValue={
-                                locations[1]
-                                    ? {
-                                          label: locations[1],
-                                          value: locations[1],
-                                      }
-                                    : "Null"
+                                locations[0]?locations[0] : "Null"
                             }
                             onChange={(newValue) => {
                                 setLocation(newValue["value"]);
