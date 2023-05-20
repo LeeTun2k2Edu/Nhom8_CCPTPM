@@ -10,10 +10,15 @@ import Select from "react-select";
 import { Label } from "recharts";
 
 function Charts1(props) {
+    const currentDate = new Date();
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-    const [selectedStartDateTime, setSelectedStartDateTime] = useState(null);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-    const [selectedEndDateTime, setSelectedEndDateTime] = useState(null);
+    const [selectedStartDateTime, setSelectedStartDateTime] = useState(
+        new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+    );
+    const [selectedEndDateTime, setSelectedEndDateTime] = useState(
+        new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+    );
 
     const handleButtonStartDateClick = () => {
         setShowStartDatePicker(!showStartDatePicker);
@@ -42,24 +47,86 @@ function Charts1(props) {
         }${month}-${year}`;
     };
 
+    const [data, setData] = useState({
+        pieChart: [],
+        barChart: [],
+        predict: [],
+    });
+
+    useEffect(() => {
+        const fetchData = debounce(async function () {
+            const result = await axios.get("/api/charts", {
+                params: {
+                    date_start: formatDate(selectedStartDateTime),
+                    date_end: formatDate(selectedEndDateTime),
+                },
+            });
+            const d = result.data;
+
+            const barChart = [];
+            for (let i = 1; i <= 7; i++) {
+                barChart.push({
+                    name: i,
+                    ok: 0,
+                    fail: 0,
+                });
+            }
+
+            //BarChart of statistic_predict_results
+            const barChart2 = [];
+
+            let value_tmp = 0;
+            for (let i = 1; i < d.statistic_predict_results.length; i++) {
+                if (i % 10 === 0) {
+                    barChart2.push({
+                        name: i / 10,
+                        statistic_predict_results: value_tmp,
+                    });
+                    value_tmp = 0;
+                } else {
+                    value_tmp += d.statistic_predict_results[i - 1][1];
+                    console.log(value_tmp);
+                }
+            }
+
+            d.ok.forEach((ok) => (barChart[ok[0] - 1].ok += ok[1]));
+            d.fail.forEach((fail) => (barChart[fail[0] - 1].fail += fail[1]));
+
+            setData({
+                pieChart: [
+                    { name: "ok", value: d.ok.length },
+                    { name: "fail", value: d.fail.length },
+                ],
+                barChart: barChart,
+                predict: barChart2,
+            });
+        });
+        fetchData();
+    }, [selectedEndDateTime, selectedStartDateTime]);
+
     return (
         <div id="charts-1">
             <Container className="charts-1">
-                {selectedStartDateTime ? (
-                    <h2 className="charts-header">
-                        Charts from {formatDate(selectedStartDateTime)} to
-                        {formatDate(selectedStartDateTime)}
-                    </h2>
-                ) : (
-                    <h2 className="charts-header">Charts</h2>
-                )}
+                <h2 className="charts-header">
+                    Data Charts from{" "}
+                    {selectedStartDateTime
+                        ? formatDate(selectedStartDateTime)
+                        : ""}{" "}
+                    to {" "}
+                    {selectedEndDateTime ? formatDate(selectedEndDateTime) : ""}
+                </h2>
+
                 <div className="select-section">
                     <div>
                         <Button onClick={handleButtonStartDateClick}>
-                            {showStartDatePicker ? "Close" : "Choose Start Date"}
+                            {showStartDatePicker
+                                ? "Close"
+                                : "Choose Start Date"}
                         </Button>
                         {showStartDatePicker && (
-                            <MyDateTimePicker onSelect={handleStartDateSelect} />
+                            <MyDateTimePicker
+                                onSelect={handleStartDateSelect}
+                            />
                         )}
                     </div>
                     <div>
@@ -76,7 +143,7 @@ function Charts1(props) {
                         <Card className="mb-3 pb-3 container d-flex center">
                             <h5 className="p-3">Status percentage</h5>
                             <PieChartComponent
-                                data={[]}
+                                data={data.pieChart}
                                 width={300}
                                 height={300}
                                 label={true}
@@ -87,14 +154,12 @@ function Charts1(props) {
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container d-flex center">
                             <h5 className="p-3 ms-5">Ok angles</h5>
-                            <BarChart1ColComponent
-                                data={[]}
+                            <BarChart2ColComponent
+                                data={data.barChart}
                                 width={500}
                                 height={300}
                                 axis={true}
                                 legend={true}
-                                color="#ade7b6"
-                                name="Angles: ok"
                             />
                         </Card>
                     </Col>
@@ -106,7 +171,7 @@ function Charts1(props) {
                                 Predict result statistic
                             </h5>
                             <BarChart1ColComponent
-                                data={[]}
+                                data={data.predict}
                                 width={500}
                                 height={300}
                                 axis={true}

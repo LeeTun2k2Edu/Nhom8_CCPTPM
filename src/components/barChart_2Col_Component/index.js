@@ -24,8 +24,8 @@ function BarChart_2Col_Component(props) {
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip />
             {legend ? <Legend /> : null}
-            <Bar dataKey="ok" stroke="#8884d8" fill="#8884d8" />
-            <Bar dataKey="fail" stroke="#8884d8" fill="#8884d8" />
+            <Bar dataKey="ok" stroke="#7fb15f" fill="#7fb15f" />
+            <Bar dataKey="fail" stroke="#D8858A" fill="#D8858A" />
         </BarChart>
     );
 }
