@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Button, Container } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import Select from "react-select";
 import { debounce } from "lodash";
@@ -44,7 +44,6 @@ function Table(props) {
         }${month}-${year}`;
     };
 
-
     const [locations, setLocations] = useState(null);
     const [status, setStatus] = useState(null);
     const [angles, setAngles] = useState(null);
@@ -65,14 +64,13 @@ function Table(props) {
                         setStatus(response1.data["STATUS"]);
                         setAngles(response1.data["ANGLES"]);
 
-
                         return axios.get("/api/data-table", {
                             params: {
                                 location: response1.data["LOCATIONS"][1],
                                 status: statusDetail,
                                 angle: angle,
                                 date_start: formatDate(selectedStartDateTime),
-                                date_end: formatDate(selectedEndDateTime)
+                                date_end: formatDate(selectedEndDateTime),
                             },
                         });
                     })
@@ -86,14 +84,21 @@ function Table(props) {
                         status: statusDetail,
                         angle: angle,
                         date_start: formatDate(selectedStartDateTime),
-                        date_end: formatDate(selectedEndDateTime)
+                        date_end: formatDate(selectedEndDateTime),
                     },
                 });
                 setData(result.data);
             }
         }, 1000);
         fetchData();
-    }, [locations, location, statusDetail, angle, selectedStartDateTime, selectedEndDateTime]);
+    }, [
+        locations,
+        location,
+        statusDetail,
+        angle,
+        selectedStartDateTime,
+        selectedEndDateTime,
+    ]);
 
     if (locations === null) {
         return (
@@ -102,18 +107,18 @@ function Table(props) {
         );
     }
 
-    var jsonObject = []
+    var jsonObject = [];
     for (var i = 1; i < data.length; i++) {
         jsonObject.push({
             stt: data[i][0],
             date: data[i][1],
             angle_id: data[i][2],
             status: data[i][3],
-            predict_result: data[i][4]
+            predict_result: data[i][4],
         });
     }
 
-    console.log(jsonObject)
+    console.log(jsonObject);
 
     const columns = [
         {
@@ -145,7 +150,7 @@ function Table(props) {
             selector: (row) => row.predict_result,
             sortable: false,
             width: "40%",
-        }
+        },
     ];
 
     return (
@@ -161,7 +166,12 @@ function Table(props) {
                                 return { label: location, value: location };
                             })}
                             defaultValue={
-                                locations[0]?locations[0] : "Null"
+                                locations[0]
+                                    ? {
+                                          label: locations[0],
+                                          value: locations[0],
+                                      }
+                                    : "Null"
                             }
                             onChange={(newValue) => {
                                 setLocation(newValue["value"]);
@@ -203,40 +213,34 @@ function Table(props) {
                         />
                     </div>
 
-
-                    
-                    <div className="select-section">
-                        <div>
-                            <Button onClick={handleButtonStartDateClick}>
-                                {showStartDatePicker ? "Close" : "Choose Start Date"}
-                            </Button>
-                            {showStartDatePicker && (
-                                <MyDateTimePicker onSelect={handleStartDateSelect} />
-                            )}
-                        </div>
-                        <div>
-                            <Button onClick={handleButtonEndDateClick}>
-                                {showEndDatePicker ? "Close" : "Choose End Date"}
-                            </Button>
-                            {showEndDatePicker && (
-                                <MyDateTimePicker onSelect={handleEndDateSelect} />
-                            )}
-                        </div>
+                    <div className="button-box">
+                        <label>
+                            Date Start: {formatDate(selectedStartDateTime)}
+                        </label>
+                        <Button onClick={handleButtonStartDateClick}>
+                            {showStartDatePicker
+                                ? "Close"
+                                : "Choose Start Date"}
+                        </Button>
+                        {showStartDatePicker && (
+                            <MyDateTimePicker
+                                onSelect={handleStartDateSelect}
+                            />
+                        )}
                     </div>
-
-                    {selectedStartDateTime ? (
-                        <h2 className="charts-header">
-                            Charts from {formatDate(selectedStartDateTime)} to
-                            {formatDate(selectedEndDateTime)}
-                        </h2>
-                    ) : (
-                        <h2 className="charts-header">Date</h2>
-                    )}
-
-                    
+                    <div className="button-box">
+                        <label>
+                            Date End: {formatDate(selectedEndDateTime)}
+                        </label>
+                        <Button onClick={handleButtonEndDateClick}>
+                            {showEndDatePicker ? "Close" : "Choose End Date"}
+                        </Button>
+                        {showEndDatePicker && (
+                            <MyDateTimePicker onSelect={handleEndDateSelect} />
+                        )}
+                    </div>
                 </div>
                 <DataTable columns={columns} data={jsonObject} />
-                
             </Container>
         </div>
     );

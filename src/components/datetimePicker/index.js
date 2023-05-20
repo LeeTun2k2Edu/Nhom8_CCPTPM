@@ -17,6 +17,7 @@ function MyDateTimePicker({ onSelect }) {
                 onChange={handleDateChange}
                 showTimeSelect
                 minDate={null}
+                className="datetime-picker"
             />
         </div>
     );

@@ -1,4 +1,4 @@
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Row} from "react-bootstrap";
 import { debounce } from "lodash";
 import axios from "axios";
 import PieChartComponent from "../pieChartComponent";
@@ -6,8 +6,6 @@ import BarChart2ColComponent from "../barChart_2Col_Component";
 import BarChart1ColComponent from "../barChart_1Col_Component";
 import { useEffect, useState } from "react";
 import MyDateTimePicker from "../datetimePicker";
-import Select from "react-select";
-import { Label } from "recharts";
 
 function Charts1(props) {
     const currentDate = new Date();
@@ -115,8 +113,8 @@ function Charts1(props) {
                     {selectedEndDateTime ? formatDate(selectedEndDateTime) : ""}
                 </h2>
 
-                <div className="select-section">
-                    <div>
+                <div className="select-section pb-4 d-flex">
+                    <div className="me-4">
                         <Button onClick={handleButtonStartDateClick}>
                             {showStartDatePicker
                                 ? "Close"
