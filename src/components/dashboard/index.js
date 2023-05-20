@@ -28,21 +28,47 @@ function Dashboard(props) {
                 barChart_lastmonth.push({
                     "name": i,
                     "ok": 0,
-                    "fail": 0
+                    "fail": 0,
+                    //"statistic_predict_results": 0
                 })
             }
+
+            //BarChart of statistic_predict_results
+            const barChart2_lastmonth = []
+
+            let value_tmp = 0;
+            for (let i = 1; i < last_month.statistic_predict_results.length; i++) {
+                if(i % 10 == 0)
+                {
+                    barChart2_lastmonth.push({
+                        "name": i/10,
+                        "statistic_predict_results": value_tmp
+                    })
+                    value_tmp = 0;
+                }
+                else{
+                    value_tmp += last_month.statistic_predict_results[i-1][1];
+                    console.log(value_tmp)
+                }
+            }
+
+
             last_month.ok.forEach(ok=>barChart_lastmonth[ok[0]-1].ok += ok[1])
             last_month.fail.forEach(fail=>barChart_lastmonth[fail[0]-1].fail += fail[1])
+           
 
             setLastMonthData({
                 pieChart: [
                     { "name": "ok", "value": last_month.ok.length },
                     { "name": "fail", "value": last_month.fail.length },
+                    
                 ],
                 barChart: barChart_lastmonth,
-                predict: [],
+                predict: barChart2_lastmonth
             });
 
+
+            //Current Month Fragment
             const current_month = result.data.current_month;
             const barChart_currentmonth = []
             for (let i = 1; i <= 7; i++) {
@@ -52,6 +78,28 @@ function Dashboard(props) {
                     "fail": 0
                 })
             }
+
+
+            //BarChart of statistic_predict_results
+            const barChart2_currentmonth = []
+
+            let value_tmp2 = 0;
+            for (let i = 1; i < current_month.statistic_predict_results.length; i++) {
+                if(i % 10 == 0)
+                {
+                    barChart2_currentmonth.push({
+                        "name": i/10,
+                        "statistic_predict_results": value_tmp2
+                    })
+                    value_tmp2 = 0;
+                }
+                else{
+                    value_tmp2 += current_month.statistic_predict_results[i-1][1];
+                    
+                }
+            }
+            
+
             current_month.ok.forEach(ok=>barChart_currentmonth[ok[0]-1].ok += ok[1])
             current_month.fail.forEach(fail=>barChart_currentmonth[fail[0]-1].fail += fail[1])
             setCurrentMonthData({
@@ -60,7 +108,7 @@ function Dashboard(props) {
                     { "name": "fail", "value": current_month.fail.length },
                 ],
                 barChart: barChart_currentmonth,
-                predict: [],
+                predict: barChart2_currentmonth,
             });
         });
         fetchData();
@@ -129,7 +177,7 @@ function Dashboard(props) {
                                 Predict result statistic
                             </h5>
                             <BarChart1ColComponent
-                                data={[]}
+                                data={lastMonthData.predict}
                                 width={500}
                                 height={300}
                                 axis={true}
@@ -144,7 +192,7 @@ function Dashboard(props) {
                                 Predict result statistic
                             </h5>
                             <BarChart1ColComponent
-                                data={[]}
+                                data={currentMonthData.predict}
                                 width={500}
                                 height={300}
                                 axis={true}
