@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import database.dbms as dbms
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from calendar import monthrange
 
 app = Flask(__name__)
@@ -47,6 +47,9 @@ def dataTable():
         angle = request.args.get('angle')
         date_start = request.args.get('date_start')
         date_end = request.args.get("date_end")
+
+        date_start = datetime.strptime(date_start, '%d-%m-%Y').date()
+        date_end = datetime.strptime(date_end, '%d-%m-%Y').date()
 
         data = dbms.get_data_by_filtered(location=location, status=status, angle=angle, date_start=date_start,
                                          date_end=date_end)
@@ -103,6 +106,9 @@ def charts():
     try:
         date_start = request.args.get("date_start")
         date_end = request.args.get("date_end")
+        date_start = datetime.strptime(date_start, '%d-%m-%Y').date()
+        date_end = datetime.strptime(date_end, '%d-%m-%Y').date()
+
         data = {
             "ok": dbms.get_number_angle_with_status(status="ok", date_start=date_start, date_end=date_end),
             "fail": dbms.get_number_angle_with_status(status="fail", date_start=date_start, date_end=date_end),
@@ -181,9 +187,16 @@ def edit_user(username):
 
 @app.route('/api/test')
 def test():
+    location = request.args.get('location')
+    status = request.args.get('status')
+    angle = request.args.get('angle')
     date_start = request.args.get('date_start')
     date_end = request.args.get("date_end")
-    data = dbms.test(date_start=date_start, date_end=date_end)
+
+    date_start = datetime.strptime(date_start, '%d-%m-%Y').date()
+    date_end = datetime.strptime(date_end, '%d-%m-%Y').date()
+    print(date_start)
+    data = dbms.test(location=location, status=status, angle=angle, date_start=date_start,date_end=date_end)
     return jsonify(data), 200
 
 

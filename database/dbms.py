@@ -79,7 +79,7 @@ def get_locations():
     return execute_query(query)
 
 
-def get_data_by_filtered(location: str, status: str, angle: int, date_start: date, date_end: date):
+def get_data_by_filtered(location: str, status: str, angle: int, date_start:date, date_end:date):
     query = '''
         SELECT location, date, angle_id, status, results
         FROM (
@@ -94,7 +94,7 @@ def get_data_by_filtered(location: str, status: str, angle: int, date_start: dat
         ) AS temp ON Data.id = temp.id 
     '''
     params = [date_start, date_end]
-    
+    print(params)
     conditions = []
     if location != '-':
         conditions.append('location=?')
