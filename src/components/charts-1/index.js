@@ -77,15 +77,14 @@ function Charts1(props) {
 
             let value_tmp = 0;
             for (let i = 1; i < d.statistic_predict_results.length; i++) {
-                if (i % 10 === 0) {
+                if (i % 3 === 0) {
                     barChart2.push({
-                        name: i / 10,
+                        name: `<${i}`,
                         statistic_predict_results: value_tmp,
                     });
                     value_tmp = 0;
                 } else {
                     value_tmp += d.statistic_predict_results[i - 1][1];
-                    console.log(value_tmp);
                 }
             }
 
@@ -172,8 +171,8 @@ function Charts1(props) {
                             </h5>
                             <BarChart1ColComponent
                                 data={data.predict}
-                                width={500}
-                                height={300}
+                                width={1000}
+                                height={500}
                                 axis={true}
                                 legend={true}
                                 name="Predict result"

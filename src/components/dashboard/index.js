@@ -48,7 +48,6 @@ function Dashboard(props) {
                 }
                 else{
                     value_tmp += last_month.statistic_predict_results[i-1][1];
-                    console.log(value_tmp)
                 }
             }
 
