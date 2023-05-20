@@ -38,7 +38,7 @@ function Dashboard(props) {
 
             let value_tmp = 0;
             for (let i = 1; i < last_month.statistic_predict_results.length; i++) {
-                if(i % 10 == 0)
+                if(i % 10 === 0)
                 {
                     barChart2_lastmonth.push({
                         "name": i/10,
@@ -84,7 +84,7 @@ function Dashboard(props) {
 
             let value_tmp2 = 0;
             for (let i = 1; i < current_month.statistic_predict_results.length; i++) {
-                if(i % 10 == 0)
+                if(i % 10 === 0)
                 {
                     barChart2_currentmonth.push({
                         "name": i/10,
@@ -116,7 +116,7 @@ function Dashboard(props) {
     return (
         <div id="dashboard">
             <Container className="lastest-report">
-                <h3 className="report-header pb-4">Overview API 12/2022</h3>
+                <h3 className="report-header pb-4">Overview</h3>
                 <Row className="report-content">
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container d-flex center">
