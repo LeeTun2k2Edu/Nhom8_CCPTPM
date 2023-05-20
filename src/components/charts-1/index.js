@@ -10,33 +10,64 @@ import Select from "react-select";
 import { Label } from "recharts";
 
 function Charts1(props) {
-    const [showPicker, setShowPicker] = useState(false);
-    const [selectedDateTime, setSelectedDateTime] = useState(null);
+    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [selectedStartDateTime, setSelectedStartDateTime] = useState(null);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+    const [selectedEndDateTime, setSelectedEndDateTime] = useState(null);
 
-    const handleButtonClick = () => {
-        setShowPicker(!showPicker);
+    const handleButtonStartDateClick = () => {
+        setShowStartDatePicker(!showStartDatePicker);
     };
 
-    const handleDateSelect = (date) => {
-        setSelectedDateTime(date);
-        setShowPicker(false);
+    const handleButtonEndDateClick = () => {
+        setShowEndDatePicker(!showEndDatePicker);
     };
+
+    const handleStartDateSelect = (date) => {
+        setSelectedStartDateTime(date);
+        setShowStartDatePicker(false);
+    };
+
+    const handleEndDateSelect = (date) => {
+        setSelectedEndDateTime(date);
+        setShowEndDatePicker(false);
+    };
+
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${day < 10 ? "0" : ""}${day}-${
+            month < 10 ? "0" : ""
+        }${month}-${year}`;
+    };
+
     return (
         <div id="charts-1">
             <Container className="charts-1">
+                {selectedStartDateTime ? (
+                    <h2 className="charts-header">
+                        Charts from {formatDate(selectedStartDateTime)} to
+                        {formatDate(selectedStartDateTime)}
+                    </h2>
+                ) : (
+                    <h2 className="charts-header">Charts</h2>
+                )}
                 <div className="select-section">
                     <div>
-                        <Button onClick={handleButtonClick}>
-                            {showPicker ? "Hide Picker" : "Show Picker"}
+                        <Button onClick={handleButtonStartDateClick}>
+                            {showStartDatePicker ? "Close" : "Choose Start Date"}
                         </Button>
-                        {showPicker && (
-                            <MyDateTimePicker onSelect={handleDateSelect} />
+                        {showStartDatePicker && (
+                            <MyDateTimePicker onSelect={handleStartDateSelect} />
                         )}
-                        {selectedDateTime && (
-                            <Label>
-                                Selected Date and Time:{" "}
-                                {selectedDateTime.toString()}
-                            </Label>
+                    </div>
+                    <div>
+                        <Button onClick={handleButtonEndDateClick}>
+                            {showEndDatePicker ? "Close" : "Choose End Date"}
+                        </Button>
+                        {showEndDatePicker && (
+                            <MyDateTimePicker onSelect={handleEndDateSelect} />
                         )}
                     </div>
                 </div>
