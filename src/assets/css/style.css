@@ -11776,5 +11776,9 @@ button,
 }
 
 .button-box {
-    margin: 4px
+    margin: 8px
+}
+
+#location-select {
+    min-width: 120px;
 }

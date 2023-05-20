@@ -10,6 +10,8 @@ function Table(props) {
     const currentDate = new Date();
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+
+    const [currentPage, setCurrentPage] = useState(1);
     const [selectedStartDateTime, setSelectedStartDateTime] = useState(
         new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
     );
@@ -122,7 +124,7 @@ function Table(props) {
 
     const columns = [
         {
-            name: "STT",
+            name: "Location",
             selector: (row) => row.stt,
             sortable: true,
             center: true,
@@ -152,6 +154,77 @@ function Table(props) {
             width: "40%",
         },
     ];
+
+    const itemsPerPage = 10; // Số phần tử hiển thị trên mỗi trang
+    const totalItems = jsonObject.length; // Tổng số phần tử
+
+    // Tính toán chỉ mục phần tử bắt đầu và kết thúc trên trang hiện tại
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = jsonObject.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    // Hàm xử lý khi người dùng chuyển trang
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const renderPagination = () => {
+        const paginationButtons = [];
+
+        // First page button
+        paginationButtons.push(
+            <Button
+                key="first"
+                onClick={() => handlePageChange(1)}
+                disabled={currentPage === 1}
+                className="mx-1"
+
+            >
+                &lt;&lt;
+            </Button>
+        );
+
+        // Previous button
+        paginationButtons.push(
+            <Button
+                key="prev"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="mx-1"
+
+            >
+                &lt;
+            </Button>
+        );
+
+        // Next button
+        paginationButtons.push(
+            <Button
+                key="next"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="mx-1"
+            >
+                &gt;
+            </Button>
+        );
+
+        // Last page button
+        paginationButtons.push(
+            <Button
+                key="last"
+                onClick={() => handlePageChange(totalPages)}
+                disabled={currentPage === totalPages}
+                className="mx-1"
+                
+            >
+                &gt;&gt;
+            </Button>
+        );
+
+        return paginationButtons;
+    };
 
     return (
         <div id="table">
@@ -240,7 +313,10 @@ function Table(props) {
                         )}
                     </div>
                 </div>
-                <DataTable columns={columns} data={jsonObject} />
+                <div className="pt-4">
+                    <DataTable columns={columns} data={currentItems} />
+                    <div className="pagination d-flex center">{renderPagination()}</div>
+                </div>
             </Container>
         </div>
     );
