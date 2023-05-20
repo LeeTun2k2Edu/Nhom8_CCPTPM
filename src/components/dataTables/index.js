@@ -1,11 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import {Button, Container } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import Select from "react-select";
 import { debounce } from "lodash";
 import axios from "axios";
+import MyDateTimePicker from "../datetimePicker";
 
 function Table(props) {
+    var currentDate = new Date();
+    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [selectedStartDateTime, setSelectedStartDateTime] = useState(currentDate);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+    const [selectedEndDateTime, setSelectedEndDateTime] = useState(currentDate);
+
+    const handleButtonStartDateClick = () => {
+        setShowStartDatePicker(!showStartDatePicker);
+    };
+
+    const handleButtonEndDateClick = () => {
+        setShowEndDatePicker(!showEndDatePicker);
+    };
+
+    const handleStartDateSelect = (date) => {
+        setSelectedStartDateTime(date);
+        setShowStartDatePicker(false);
+    };
+
+    const handleEndDateSelect = (date) => {
+        setSelectedEndDateTime(date);
+        setShowEndDatePicker(false);
+    };
+
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${day < 10 ? "0" : ""}${day}-${
+            month < 10 ? "0" : ""
+        }${month}-${year}`;
+    };
+
+
     const [locations, setLocations] = useState(null);
     const [status, setStatus] = useState(null);
     const [angles, setAngles] = useState(null);
@@ -26,11 +61,15 @@ function Table(props) {
                         setStatus(response1.data["STATUS"]);
                         setAngles(response1.data["ANGLES"]);
                         setLocation(response1.data["LOCATIONS"][1]);
+
+
                         return axios.get("/api/data-table", {
                             params: {
                                 location: response1.data["LOCATIONS"][1],
                                 status: statusDetail,
                                 angle: angle,
+                                date_start: selectedStartDateTime,
+                                date_end: selectedEndDateTime
                             },
                         });
                     })
@@ -43,13 +82,15 @@ function Table(props) {
                         location: location,
                         status: statusDetail,
                         angle: angle,
+                        date_start: selectedStartDateTime,
+                        date_end: selectedEndDateTime
                     },
                 });
                 setData(result.data);
             }
         }, 1000);
         fetchData();
-    }, [locations, location, statusDetail, angle]);
+    }, [locations, location, statusDetail, angle, selectedStartDateTime, selectedEndDateTime]);
 
     if (locations === null) {
         return (
@@ -150,6 +191,38 @@ function Table(props) {
                             }}
                         />
                     </div>
+
+
+                    
+                    <div className="select-section">
+                        <div>
+                            <Button onClick={handleButtonStartDateClick}>
+                                {showStartDatePicker ? "Close" : "Choose Start Date"}
+                            </Button>
+                            {showStartDatePicker && (
+                                <MyDateTimePicker onSelect={handleStartDateSelect} />
+                            )}
+                        </div>
+                        <div>
+                            <Button onClick={handleButtonEndDateClick}>
+                                {showEndDatePicker ? "Close" : "Choose End Date"}
+                            </Button>
+                            {showEndDatePicker && (
+                                <MyDateTimePicker onSelect={handleEndDateSelect} />
+                            )}
+                        </div>
+                    </div>
+
+                    {selectedStartDateTime ? (
+                        <h2 className="charts-header">
+                            Charts from {formatDate(selectedStartDateTime)} to
+                            {formatDate(selectedEndDateTime)}
+                        </h2>
+                    ) : (
+                        <h2 className="charts-header">Date</h2>
+                    )}
+
+                    
                 </div>
                 <DataTable columns={columns} data={data} />
             </Container>
