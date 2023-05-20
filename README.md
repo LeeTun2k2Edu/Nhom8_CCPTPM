@@ -13,12 +13,19 @@ Trước khi cài đặt Flask, bạn cần cài đặt Python trên máy tính 
 ## Cách sử dụng
 ### 1. Khởi động server Flask
 Để khởi động server Flask, mở terminal và thực hiện các lệnh sau:
+- Tạo Virtual Environment
+```
+python -m venv venv
+```
+- Activate python venv
 ```
 venv/Scripts/activate
 ```
+- Cài đặt lib
 ```
 pip install -r requirements.txt
 ```
+- Khởi động backend
 ```
 flask run
 ```

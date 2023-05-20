@@ -19,6 +19,8 @@ function PieChartComponent(props) {
                               `${name}: ${Math.round((value / sum) * 100)}%`
                         : null
                 }
+                startAngle={90}
+                endAngle={450}
                 outerRadius={80}
                 fill="#8884d8"
                 labelLine="false"

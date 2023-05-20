@@ -1,69 +1,128 @@
 import React, { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import PieChartComponent from "../pieChartComponent";
-import BarChartComponent from "../barChartComponent";
+import BarChart1ColComponent from "../barChart_1Col_Component";
+import BarChart2ColComponent from "../barChart_2Col_Component";
 import { debounce } from "lodash";
 import axios from "axios";
 
 function Dashboard(props) {
-    const [ok_records, setOk_records] = useState(0);
-    const [fail_records, setFail_records] = useState(0);
-    const [ok_angles, setOk_angles] = useState([]);
-    const [fail_angles, setFail_angles] = useState([]);
-    const [predict_result_statistic, setPredict_result_statistic] = useState(
-        []
-    );
+    const [lastMonthData, setLastMonthData] = useState({
+        pieChart: [],
+        barChart: [],
+        predict: [],
+    });
 
-    // fetch option datas => then fetch 1st record
+    const [currentMonthData, setCurrentMonthData] = useState({
+        pieChart: [],
+        barChart: [],
+        predict: [],
+    });
+
     useEffect(() => {
         const fetchData = debounce(async function () {
-            const result = await axios.get(
-                "/api/overview",
+            const result = await axios.get("/api/overview");
+            const last_month = result.data.last_month;
+            const barChart_lastmonth = []
+            for (let i = 1; i <= 7; i++) {
+                barChart_lastmonth.push({
+                    "name": i,
+                    "ok": 0,
+                    "fail": 0,
+                    //"statistic_predict_results": 0
+                })
+            }
+
+            //BarChart of statistic_predict_results
+            const barChart2_lastmonth = []
+
+            let value_tmp = 0;
+            for (let i = 1; i < last_month.statistic_predict_results.length; i++) {
+                if(i % 10 === 0)
                 {
-                    params: {
-                        dayStart: 1,
-                        dayEnd: 31,
-                    },
+                    barChart2_lastmonth.push({
+                        "name": i/10,
+                        "statistic_predict_results": value_tmp
+                    })
+                    value_tmp = 0;
                 }
-            );
-            setOk_records(result.data["ok_records"]);
-            setFail_records(result.data["fail_records"]);
-            setOk_angles(result.data["ok_angles"]);
-            setFail_angles(result.data["fail_angles"]);
-            setPredict_result_statistic(
-                result.data["predict_result_statistic"]
-            );
+                else{
+                    value_tmp += last_month.statistic_predict_results[i-1][1];
+                }
+            }
+
+
+            last_month.ok.forEach(ok=>barChart_lastmonth[ok[0]-1].ok += ok[1])
+            last_month.fail.forEach(fail=>barChart_lastmonth[fail[0]-1].fail += fail[1])
+           
+
+            setLastMonthData({
+                pieChart: [
+                    { "name": "ok", "value": last_month.ok.length },
+                    { "name": "fail", "value": last_month.fail.length },
+                    
+                ],
+                barChart: barChart_lastmonth,
+                predict: barChart2_lastmonth
+            });
+
+
+            //Current Month Fragment
+            const current_month = result.data.current_month;
+            const barChart_currentmonth = []
+            for (let i = 1; i <= 7; i++) {
+                barChart_currentmonth.push({
+                    "name": i,
+                    "ok": 0,
+                    "fail": 0
+                })
+            }
+
+
+            //BarChart of statistic_predict_results
+            const barChart2_currentmonth = []
+
+            let value_tmp2 = 0;
+            for (let i = 1; i < current_month.statistic_predict_results.length; i++) {
+                if(i % 10 === 0)
+                {
+                    barChart2_currentmonth.push({
+                        "name": i/10,
+                        "statistic_predict_results": value_tmp2
+                    })
+                    value_tmp2 = 0;
+                }
+                else{
+                    value_tmp2 += current_month.statistic_predict_results[i-1][1];
+                    
+                }
+            }
+            
+
+            current_month.ok.forEach(ok=>barChart_currentmonth[ok[0]-1].ok += ok[1])
+            current_month.fail.forEach(fail=>barChart_currentmonth[fail[0]-1].fail += fail[1])
+            setCurrentMonthData({
+                pieChart: [
+                    { "name": "ok", "value": current_month.ok.length },
+                    { "name": "fail", "value": current_month.fail.length },
+                ],
+                barChart: barChart_currentmonth,
+                predict: barChart2_currentmonth,
+            });
         });
         fetchData();
     }, []);
 
-    if (
-        !(
-            ok_records &&
-            fail_records &&
-            ok_angles &&
-            fail_angles &&
-            predict_result_statistic
-        )
-    ) {
-        return (
-            // Render a loading indicator while waiting for the data to load
-            <h1>Loading...</h1>
-        );
-    }
     return (
         <div id="dashboard">
             <Container className="lastest-report">
-                <h3 className="report-header pb-4">Overview API 12/2022</h3>
+                <h3 className="report-header pb-4">Overview</h3>
                 <Row className="report-content">
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container d-flex center">
                             <h5 className="p-3">Status percentage</h5>
                             <PieChartComponent
-                                data={[
-                                    { name: "ok", value: ok_records },
-                                    { name: "fail", value: fail_records },
-                                ]}
+                                data={lastMonthData.pieChart}
                                 width={300}
                                 height={300}
                                 label={true}
@@ -73,20 +132,39 @@ function Dashboard(props) {
                     </Col>
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container d-flex center">
+                            <h5 className="p-3">Status percentage</h5>
+                            <PieChartComponent
+                                data={currentMonthData.pieChart}
+                                width={300}
+                                height={300}
+                                label={true}
+                                legend={true}
+                            />
+                        </Card>
+                    </Col>
+                </Row>
+                <Row className="report-content">
+                    <Col md="12" lg="6">
+                        <Card className="mb-3 pb-3 container d-flex center">
                             <h5 className="p-3 ms-5">Ok angles</h5>
-                            <BarChartComponent
-                                data={ok_angles.map((item) => {
-                                    return {
-                                        name: item[0],
-                                        "Angles: ok": item[1],
-                                    };
-                                })}
+                            <BarChart2ColComponent
+                                data={lastMonthData.barChart}
                                 width={500}
                                 height={300}
                                 axis={true}
                                 legend={true}
-                                color="#ade7b6"
-                                name="Angles: ok"
+                            />
+                        </Card>
+                    </Col>
+                    <Col md="12" lg="6">
+                        <Card className="mb-3 pb-3 container d-flex center">
+                            <h5 className="p-3 ms-5">Ok angles</h5>
+                            <BarChart2ColComponent
+                                data={currentMonthData.barChart}
+                                width={500}
+                                height={300}
+                                axis={true}
+                                legend={true}
                             />
                         </Card>
                     </Col>
@@ -97,13 +175,8 @@ function Dashboard(props) {
                             <h5 className="p-3 ms-5">
                                 Predict result statistic
                             </h5>
-                            <BarChartComponent
-                                data={predict_result_statistic.map((item) => {
-                                    return {
-                                        name: item[0],
-                                        "Predict result": item[1],
-                                    };
-                                })}
+                            <BarChart1ColComponent
+                                data={lastMonthData.predict}
                                 width={500}
                                 height={300}
                                 axis={true}
@@ -114,20 +187,16 @@ function Dashboard(props) {
                     </Col>
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container d-flex center">
-                            <h5 className="p-3 ms-5">Fail Angles</h5>
-                            <BarChartComponent
-                                data={fail_angles.map((item) => {
-                                    return {
-                                        name: item[0],
-                                        "Angles: fail": item[1],
-                                    };
-                                })}
+                            <h5 className="p-3 ms-5">
+                                Predict result statistic
+                            </h5>
+                            <BarChart1ColComponent
+                                data={currentMonthData.predict}
                                 width={500}
                                 height={300}
                                 axis={true}
                                 legend={true}
-                                color="#ffa69e"
-                                name="Angles: fail"
+                                name="Predict result"
                             />
                         </Card>
                     </Col>

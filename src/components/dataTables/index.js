@@ -1,11 +1,51 @@
 import React, { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import Select from "react-select";
 import { debounce } from "lodash";
 import axios from "axios";
+import MyDateTimePicker from "../datetimePicker";
 
 function Table(props) {
+    const currentDate = new Date();
+    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [selectedStartDateTime, setSelectedStartDateTime] = useState(
+        new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+    );
+    const [selectedEndDateTime, setSelectedEndDateTime] = useState(
+        new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+    );
+
+    const handleButtonStartDateClick = () => {
+        setShowStartDatePicker(!showStartDatePicker);
+    };
+
+    const handleButtonEndDateClick = () => {
+        setShowEndDatePicker(!showEndDatePicker);
+    };
+
+    const handleStartDateSelect = (date) => {
+        setSelectedStartDateTime(date);
+        setShowStartDatePicker(false);
+    };
+
+    const handleEndDateSelect = (date) => {
+        setSelectedEndDateTime(date);
+        setShowEndDatePicker(false);
+    };
+
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${day < 10 ? "0" : ""}${day}-${
+            month < 10 ? "0" : ""
+        }${month}-${year}`;
+    };
+
     const [locations, setLocations] = useState(null);
     const [status, setStatus] = useState(null);
     const [angles, setAngles] = useState(null);
@@ -25,12 +65,14 @@ function Table(props) {
                         setLocations(response1.data["LOCATIONS"]);
                         setStatus(response1.data["STATUS"]);
                         setAngles(response1.data["ANGLES"]);
-                        setLocation(response1.data["LOCATIONS"][1]);
+
                         return axios.get("/api/data-table", {
                             params: {
                                 location: response1.data["LOCATIONS"][1],
                                 status: statusDetail,
                                 angle: angle,
+                                date_start: formatDate(selectedStartDateTime),
+                                date_end: formatDate(selectedEndDateTime),
                             },
                         });
                     })
@@ -43,13 +85,22 @@ function Table(props) {
                         location: location,
                         status: statusDetail,
                         angle: angle,
+                        date_start: formatDate(selectedStartDateTime),
+                        date_end: formatDate(selectedEndDateTime),
                     },
                 });
                 setData(result.data);
             }
         }, 1000);
         fetchData();
-    }, [locations, location, statusDetail, angle]);
+    }, [
+        locations,
+        location,
+        statusDetail,
+        angle,
+        selectedStartDateTime,
+        selectedEndDateTime,
+    ]);
 
     if (locations === null) {
         return (
@@ -58,9 +109,22 @@ function Table(props) {
         );
     }
 
+    var jsonObject = [];
+    for (var i = 1; i < data.length; i++) {
+        jsonObject.push({
+            stt: data[i][0],
+            date: data[i][1],
+            angle_id: data[i][2],
+            status: data[i][3],
+            predict_result: data[i][4],
+        });
+    }
+
+    console.log(jsonObject);
+
     const columns = [
         {
-            name: "STT",
+            name: "Location",
             selector: (row) => row.stt,
             sortable: true,
             center: true,
@@ -91,6 +155,77 @@ function Table(props) {
         },
     ];
 
+    const itemsPerPage = 10; // Số phần tử hiển thị trên mỗi trang
+    const totalItems = jsonObject.length; // Tổng số phần tử
+
+    // Tính toán chỉ mục phần tử bắt đầu và kết thúc trên trang hiện tại
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = jsonObject.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    // Hàm xử lý khi người dùng chuyển trang
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const renderPagination = () => {
+        const paginationButtons = [];
+
+        // First page button
+        paginationButtons.push(
+            <Button
+                key="first"
+                onClick={() => handlePageChange(1)}
+                disabled={currentPage === 1}
+                className="mx-1"
+
+            >
+                &lt;&lt;
+            </Button>
+        );
+
+        // Previous button
+        paginationButtons.push(
+            <Button
+                key="prev"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="mx-1"
+
+            >
+                &lt;
+            </Button>
+        );
+
+        // Next button
+        paginationButtons.push(
+            <Button
+                key="next"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="mx-1"
+            >
+                &gt;
+            </Button>
+        );
+
+        // Last page button
+        paginationButtons.push(
+            <Button
+                key="last"
+                onClick={() => handlePageChange(totalPages)}
+                disabled={currentPage === totalPages}
+                className="mx-1"
+                
+            >
+                &gt;&gt;
+            </Button>
+        );
+
+        return paginationButtons;
+    };
+
     return (
         <div id="table">
             <Container className="data-table">
@@ -104,10 +239,10 @@ function Table(props) {
                                 return { label: location, value: location };
                             })}
                             defaultValue={
-                                locations[1]
+                                locations[0]
                                     ? {
-                                          label: locations[1],
-                                          value: locations[1],
+                                          label: locations[0],
+                                          value: locations[0],
                                       }
                                     : "Null"
                             }
@@ -150,8 +285,38 @@ function Table(props) {
                             }}
                         />
                     </div>
+
+                    <div className="button-box">
+                        <label>
+                            Date Start: {formatDate(selectedStartDateTime)}
+                        </label>
+                        <Button onClick={handleButtonStartDateClick}>
+                            {showStartDatePicker
+                                ? "Close"
+                                : "Choose Start Date"}
+                        </Button>
+                        {showStartDatePicker && (
+                            <MyDateTimePicker
+                                onSelect={handleStartDateSelect}
+                            />
+                        )}
+                    </div>
+                    <div className="button-box">
+                        <label>
+                            Date End: {formatDate(selectedEndDateTime)}
+                        </label>
+                        <Button onClick={handleButtonEndDateClick}>
+                            {showEndDatePicker ? "Close" : "Choose End Date"}
+                        </Button>
+                        {showEndDatePicker && (
+                            <MyDateTimePicker onSelect={handleEndDateSelect} />
+                        )}
+                    </div>
                 </div>
-                <DataTable columns={columns} data={data} />
+                <div className="pt-4">
+                    <DataTable columns={columns} data={currentItems} />
+                    <div className="pagination d-flex center">{renderPagination()}</div>
+                </div>
             </Container>
         </div>
     );

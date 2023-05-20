@@ -1,149 +1,138 @@
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Row} from "react-bootstrap";
 import { debounce } from "lodash";
 import axios from "axios";
 import PieChartComponent from "../pieChartComponent";
-import BarChartComponent from "../barChartComponent";
+import BarChart2ColComponent from "../barChart_2Col_Component";
+import BarChart1ColComponent from "../barChart_1Col_Component";
 import { useEffect, useState } from "react";
-import Select from "react-select";
+import MyDateTimePicker from "../datetimePicker";
 
 function Charts1(props) {
-    const [dayStart, setDayStart] = useState(1);
-    const [dayEnd, setDayEnd] = useState(1);
-    const [ok_records, setOk_records] = useState(0);
-    const [fail_records, setFail_records] = useState(0);
-    const [ok_angles, setOk_angles] = useState([]);
-    const [fail_angles, setFail_angles] = useState([]);
-    const [predict_result_statistic, setPredict_result_statistic] = useState(
-        []
+    const currentDate = new Date();
+    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+    const [selectedStartDateTime, setSelectedStartDateTime] = useState(
+        new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
     );
-    const days = [];
-    for (let i = 1; i <= 31; i++) days.push(i);
+    const [selectedEndDateTime, setSelectedEndDateTime] = useState(
+        new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+    );
 
-    // fetch option datas => then fetch 1st record
+    const handleButtonStartDateClick = () => {
+        setShowStartDatePicker(!showStartDatePicker);
+    };
+
+    const handleButtonEndDateClick = () => {
+        setShowEndDatePicker(!showEndDatePicker);
+    };
+
+    const handleStartDateSelect = (date) => {
+        setSelectedStartDateTime(date);
+        setShowStartDatePicker(false);
+    };
+
+    const handleEndDateSelect = (date) => {
+        setSelectedEndDateTime(date);
+        setShowEndDatePicker(false);
+    };
+
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${day < 10 ? "0" : ""}${day}-${
+            month < 10 ? "0" : ""
+        }${month}-${year}`;
+    };
+
+    const [data, setData] = useState({
+        pieChart: [],
+        barChart: [],
+        predict: [],
+    });
+
     useEffect(() => {
         const fetchData = debounce(async function () {
-            const result = await axios.get("/api/overview", {
+            const result = await axios.get("/api/charts", {
                 params: {
-                    dayStart: dayStart,
-                    dayEnd: dayEnd,
+                    date_start: formatDate(selectedStartDateTime),
+                    date_end: formatDate(selectedEndDateTime),
                 },
             });
-            setOk_records(result.data["ok_records"]);
-            setFail_records(result.data["fail_records"]);
-            setOk_angles(result.data["ok_angles"]);
-            setFail_angles(result.data["fail_angles"]);
-            setPredict_result_statistic(
-                result.data["predict_result_statistic"]
-            );
-        }, 1000);
-        fetchData();
-    }, [dayStart, dayEnd]);
+            const d = result.data;
 
-    if (
-        !(
-            ok_records &&
-            fail_records &&
-            ok_angles &&
-            fail_angles &&
-            predict_result_statistic
-        )
-    ) {
-        return (
-            <Container className="charts-1">
-                {dayStart < dayEnd ? (
-                    <h3 className="charts-header">
-                        API Charts from {dayStart}
-                        /12/2022 to {dayEnd}/12/2022
-                    </h3>
-                ) : (
-                    <h3 className="charts-header">
-                        API Charts date {dayStart}
-                        /12/2022
-                    </h3>
-                )}
-                <div className="select-section">
-                    <div className="select-box">
-                        <label htmlFor="startDay-select">Day start:</label>
-                        <Select
-                            id="startDay-select"
-                            className="select-box"
-                            options={days.map((day) => {
-                                return { label: day, value: day };
-                            })}
-                            defaultValue={{ label: days[0], value: days[0] }}
-                            onChange={(newValue) =>
-                                setDayStart(newValue["value"])
-                            }
-                        />
-                    </div>
-                    <div className="select-box">
-                        <label htmlFor="endDay-select">Day end:</label>
-                        <Select
-                            id="endDay-select"
-                            className="select-box"
-                            options={days.map((day) => {
-                                return { label: day, value: day };
-                            })}
-                            defaultValue={{ label: days[0], value: days[0] }}
-                            onChange={(newValue) =>
-                                setDayEnd(newValue["value"])
-                            }
-                        />
-                    </div>
-                </div>
-                <Row className="charts-content">
-                    <Col md="12" lg="6">
-                        <Card className="mb-3 pb-3 container d-flex center">
-                            No information
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
-        );
-    }
+            const barChart = [];
+            for (let i = 1; i <= 7; i++) {
+                barChart.push({
+                    name: i,
+                    ok: 0,
+                    fail: 0,
+                });
+            }
+
+            //BarChart of statistic_predict_results
+            const barChart2 = [];
+
+            let value_tmp = 0;
+            for (let i = 1; i < d.statistic_predict_results.length; i++) {
+                if (i % 3 === 0) {
+                    barChart2.push({
+                        name: `<${i}`,
+                        statistic_predict_results: value_tmp,
+                    });
+                    value_tmp = 0;
+                } else {
+                    value_tmp += d.statistic_predict_results[i - 1][1];
+                }
+            }
+
+            d.ok.forEach((ok) => (barChart[ok[0] - 1].ok += ok[1]));
+            d.fail.forEach((fail) => (barChart[fail[0] - 1].fail += fail[1]));
+
+            setData({
+                pieChart: [
+                    { name: "ok", value: d.ok.length },
+                    { name: "fail", value: d.fail.length },
+                ],
+                barChart: barChart,
+                predict: barChart2,
+            });
+        });
+        fetchData();
+    }, [selectedEndDateTime, selectedStartDateTime]);
 
     return (
         <div id="charts-1">
             <Container className="charts-1">
-                {dayStart < dayEnd ? (
-                    <h3 className="charts-header">
-                        API Charts from {dayStart}
-                        /12/2022 to {dayEnd}/12/2022
-                    </h3>
-                ) : (
-                    <h3 className="charts-header">
-                        API Charts date {dayStart}
-                        /12/2022
-                    </h3>
-                )}
-                <div className="select-section">
-                    <div className="select-box">
-                        <label htmlFor="startDay-select">Day start:</label>
-                        <Select
-                            id="startDay-select"
-                            className="select-box"
-                            options={days.map((day) => {
-                                return { label: day, value: day };
-                            })}
-                            defaultValue={{ label: days[0], value: days[0] }}
-                            onChange={(newValue) =>
-                                setDayStart(newValue["value"])
-                            }
-                        />
+                <h2 className="charts-header">
+                    Data Charts from{" "}
+                    {selectedStartDateTime
+                        ? formatDate(selectedStartDateTime)
+                        : ""}{" "}
+                    to {" "}
+                    {selectedEndDateTime ? formatDate(selectedEndDateTime) : ""}
+                </h2>
+
+                <div className="select-section pb-4 d-flex">
+                    <div className="me-4">
+                        <Button onClick={handleButtonStartDateClick}>
+                            {showStartDatePicker
+                                ? "Close"
+                                : "Choose Start Date"}
+                        </Button>
+                        {showStartDatePicker && (
+                            <MyDateTimePicker
+                                onSelect={handleStartDateSelect}
+                            />
+                        )}
                     </div>
-                    <div className="select-box">
-                        <label htmlFor="endDay-select">Day end:</label>
-                        <Select
-                            id="endDay-select"
-                            className="select-box"
-                            options={days.map((day) => {
-                                return { label: day, value: day };
-                            })}
-                            defaultValue={{ label: days[0], value: days[0] }}
-                            onChange={(newValue) =>
-                                setDayEnd(newValue["value"])
-                            }
-                        />
+                    <div>
+                        <Button onClick={handleButtonEndDateClick}>
+                            {showEndDatePicker ? "Close" : "Choose End Date"}
+                        </Button>
+                        {showEndDatePicker && (
+                            <MyDateTimePicker onSelect={handleEndDateSelect} />
+                        )}
                     </div>
                 </div>
                 <Row className="charts-content">
@@ -151,10 +140,7 @@ function Charts1(props) {
                         <Card className="mb-3 pb-3 container d-flex center">
                             <h5 className="p-3">Status percentage</h5>
                             <PieChartComponent
-                                data={[
-                                    { name: "ok", value: ok_records },
-                                    { name: "fail", value: fail_records },
-                                ]}
+                                data={data.pieChart}
                                 width={300}
                                 height={300}
                                 label={true}
@@ -165,60 +151,29 @@ function Charts1(props) {
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container d-flex center">
                             <h5 className="p-3 ms-5">Ok angles</h5>
-                            <BarChartComponent
-                                data={ok_angles.map((item) => {
-                                    return {
-                                        name: item[0],
-                                        "Angles: ok": item[1],
-                                    };
-                                })}
+                            <BarChart2ColComponent
+                                data={data.barChart}
                                 width={500}
                                 height={300}
                                 axis={true}
                                 legend={true}
-                                color="#ade7b6"
-                                name="Angles: ok"
                             />
                         </Card>
                     </Col>
                 </Row>
                 <Row className="charts-content">
-                    <Col md="12" lg="6">
+                    <Col md="12" lg="12">
                         <Card className="mb-3 pb-3 container d-flex center">
                             <h5 className="p-3 ms-5">
                                 Predict result statistic
                             </h5>
-                            <BarChartComponent
-                                data={predict_result_statistic.map((item) => {
-                                    return {
-                                        name: item[0],
-                                        "Predict result": item[1],
-                                    };
-                                })}
-                                width={500}
-                                height={300}
+                            <BarChart1ColComponent
+                                data={data.predict}
+                                width={1000}
+                                height={500}
                                 axis={true}
                                 legend={true}
                                 name="Predict result"
-                            />
-                        </Card>
-                    </Col>
-                    <Col md="12" lg="6">
-                        <Card className="mb-3 pb-3 container d-flex center">
-                            <h5 className="p-3 ms-5">Fail Angles</h5>
-                            <BarChartComponent
-                                data={fail_angles.map((item) => {
-                                    return {
-                                        name: item[0],
-                                        "Angles: fail": item[1],
-                                    };
-                                })}
-                                width={500}
-                                height={300}
-                                axis={true}
-                                legend={true}
-                                color="#ffa69e"
-                                name="Angles: fail"
                             />
                         </Card>
                     </Col>

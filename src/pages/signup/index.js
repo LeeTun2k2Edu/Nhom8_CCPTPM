@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Signup() {
     const [username, setUsername] = useState("");
@@ -150,7 +151,7 @@ function Signup() {
                             <div className="d-flex justify-content-end">
                                 <small className="mb-3 mt-1">
                                     Already have an account?
-                                    <a href="/login"> Login here</a>
+                                    <Link to="/login">Log in here</Link>
                                 </small>
                             </div>
                             <div className="d-flex justify-content-center w-100">
