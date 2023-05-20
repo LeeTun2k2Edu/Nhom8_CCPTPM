@@ -53,7 +53,10 @@ def dataTable():
 
         data = dbms.get_data_by_filtered(location=location, status=status, angle=angle, date_start=date_start,
                                          date_end=date_end)
-        return jsonify(data), 200
+        
+        sliced_data = data[:500]  # Lấy 500 phần tử đầu tiên
+
+        return jsonify(sliced_data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 

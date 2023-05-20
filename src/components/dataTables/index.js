@@ -68,8 +68,8 @@ function Table(props) {
                                 location: response1.data["LOCATIONS"][1],
                                 status: statusDetail,
                                 angle: angle,
-                                date_start: selectedStartDateTime,
-                                date_end: selectedEndDateTime
+                                date_start: formatDate(selectedStartDateTime),
+                                date_end: formatDate(selectedEndDateTime)
                             },
                         });
                     })
@@ -82,8 +82,8 @@ function Table(props) {
                         location: location,
                         status: statusDetail,
                         angle: angle,
-                        date_start: selectedStartDateTime,
-                        date_end: selectedEndDateTime
+                        date_start: formatDate(selectedStartDateTime),
+                        date_end: formatDate(selectedEndDateTime)
                     },
                 });
                 setData(result.data);
@@ -98,6 +98,19 @@ function Table(props) {
             <h1>Loading...</h1>
         );
     }
+
+    var jsonObject = []
+    for (var i = 1; i < data.length; i++) {
+        jsonObject.push({
+            stt: data[i][0],
+            date: data[i][1],
+            angle_id: data[i][2],
+            status: data[i][3],
+            predict_result: data[i][4]
+        });
+    }
+
+    console.log(jsonObject)
 
     const columns = [
         {
@@ -129,7 +142,7 @@ function Table(props) {
             selector: (row) => row.predict_result,
             sortable: false,
             width: "40%",
-        },
+        }
     ];
 
     return (
@@ -224,7 +237,8 @@ function Table(props) {
 
                     
                 </div>
-                <DataTable columns={columns} data={data} />
+                <DataTable columns={columns} data={jsonObject} />
+                
             </Container>
         </div>
     );
