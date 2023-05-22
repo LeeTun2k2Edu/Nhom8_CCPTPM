@@ -1,0 +1,8 @@
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: leetun2k2/dashboard:latest
+    ports:
+      - 80:3000
