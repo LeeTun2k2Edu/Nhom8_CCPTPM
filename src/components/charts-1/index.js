@@ -61,6 +61,11 @@ function Charts1(props) {
             });
             const d = result.data;
 
+            const pieChart =  [
+                { name: "ok", value: 0 },
+                { name: "fail", value: 0 },
+            ];
+
             const barChart = [];
             for (let i = 1; i <= 7; i++) {
                 barChart.push({
@@ -69,7 +74,15 @@ function Charts1(props) {
                     fail: 0,
                 });
             }
-
+            
+            d.ok.forEach((ok) => {
+                barChart[ok[0] - 1].ok += ok[1];
+                pieChart[0].value += ok[1];
+            });
+            d.fail.forEach((fail) => {
+                barChart[fail[0] - 1].fail += fail[1];
+                pieChart[1].value += fail[1];
+            });
             //BarChart of statistic_predict_results
             const barChart2 = [];
 
@@ -86,14 +99,9 @@ function Charts1(props) {
                 }
             }
 
-            d.ok.forEach((ok) => (barChart[ok[0] - 1].ok += ok[1]));
-            d.fail.forEach((fail) => (barChart[fail[0] - 1].fail += fail[1]));
 
             setData({
-                pieChart: [
-                    { name: "ok", value: d.ok.length },
-                    { name: "fail", value: d.fail.length },
-                ],
+                pieChart: pieChart,
                 barChart: barChart,
                 predict: barChart2,
             });
@@ -138,7 +146,7 @@ function Charts1(props) {
                 <Row className="charts-content">
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container d-flex center">
-                            <h5 className="p-3">Status percentage</h5>
+                            <h5 className="p-3">Ok / Fail percentage</h5>
                             <PieChartComponent
                                 data={data.pieChart}
                                 width={300}
@@ -150,7 +158,7 @@ function Charts1(props) {
                     </Col>
                     <Col md="12" lg="6">
                         <Card className="mb-3 pb-3 container d-flex center">
-                            <h5 className="p-3 ms-5">Ok angles</h5>
+                            <h5 className="p-3 ms-5">Ok / Fail by angles</h5>
                             <BarChart2ColComponent
                                 data={data.barChart}
                                 width={500}
