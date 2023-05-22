@@ -1,8 +1,14 @@
+version: '3'
 services:
   dashboard:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: leetun2k2/dashboard:latest
+    image: leetun2k2/dashboard
     ports:
-      - 80:3000
+      - 3000
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - dashboard
