@@ -16,5 +16,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker-compose build
+    - name: Log in to Docker Hub
+      run: docker login --username leetun2k2 --password Tung@2k2#docker
     - name: Push the Docker image
       run: docker-compose push
